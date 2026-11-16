@@ -1,14 +1,15 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sensory-translator-v2"
+name = "revfly"
 dynamic = ["version"]
 description = "REvFLY engine for inverse motor-rate control in FlyMimic MuJoCo"
-readme = "README.md"
+readme = "packages/sensory-translator-v2/README.md"
 requires-python = ">=3.11"
 license = "MIT"
+classifiers = ["Development Status :: 4 - Beta"]
 dependencies = [
     "numpy>=2.0",
     "torch>=2.4",
@@ -26,8 +27,12 @@ dev = [
 ]
 
 [project.scripts]
-revfly = "sensory_translator_v2.engine.cli:main"
+revfly = "revfly.__main__:main"
 sensory-engine-v2 = "sensory_translator_v2.engine.cli:main"
+
+[project.urls]
+Repository = "https://github.com/IlleJiViN/REvFLY"
+Issues = "https://github.com/IlleJiViN/REvFLY/issues"
 
 [tool.setuptools]
 include-package-data = false
@@ -36,8 +41,8 @@ include-package-data = false
 version = {attr = "sensory_translator_v2.__version__"}
 
 [tool.setuptools.package-dir]
-"" = "../../src"
+"" = "src"
 
 [tool.setuptools.packages.find]
-where = ["../../src"]
-include = ["sensory_translator_v2*"]
+where = ["src"]
+include = ["revfly", "sensory_translator_v2*"]

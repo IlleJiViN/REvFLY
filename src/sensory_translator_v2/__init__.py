@@ -56,7 +56,7 @@ from .contracts import (
     V2Error,
 )
 
-__version__ = "2.0.0a7"
+__version__ = "2.0.0"
 
 __all__ = [
     "__version__",

@@ -2,28 +2,37 @@
 
 Python SDK and CLI for translating joint trajectories into continuous motor rates and replaying them with FlyMimic MuJoCo. The wheel installs the engine and its APIs. The release ZIP supplies the checkpoints, physics assets, and optional local Control Studio.
 
-## Install from GitHub Releases
+## Install from PyPI
 
-Download the ZIP from [the release page](https://github.com/IlleJiViN/REvFLY/releases/tag/v2.0.0a7). It includes the wheel and the runtime bundle. Extract the wheel into the same directory as the ZIP before installing, or download it separately. With GitHub CLI configured, you can download both files together.
+Once the `revfly` distribution is listed on PyPI, install it for the SDK and CLI.
 
 ```bash
-gh release download v2.0.0a7 --repo IlleJiViN/REvFLY \
-  --pattern 'sensory_translator_v2-2.0.0a7-*.whl' \
-  --pattern 'revfly-2.0.0a7-local-beta.zip'
+python -m pip install revfly
+revfly --version
 ```
 
-The physics workflow was tested on Linux x86-64 with Python 3.11. On Linux, you can install CPU Torch before the wheel to avoid pulling CUDA dependencies. Rendering uses the host's OpenGL/EGL libraries.
+For simulations, add the `physics` extra and download the runtime ZIP for the model checkpoints, physics assets, and local Control Studio. The physics workflow was tested on Linux x86-64 with Python 3.11. On Linux, you can install CPU Torch first to avoid downloading CUDA dependencies. Rendering uses the host's OpenGL/EGL libraries. [Runtime ZIP](https://github.com/IlleJiViN/REvFLY/releases/download/v2.0.0/revfly-2.0.0-local-beta.zip)
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install 'torch>=2.4' --index-url https://download.pytorch.org/whl/cpu
-python -m pip install './sensory_translator_v2-2.0.0a7-py3-none-any.whl[physics]'
-revfly install-assets ./revfly-2.0.0a7-local-beta.zip
+python -m pip install 'revfly[physics]'
+revfly install-assets ./revfly-2.0.0-local-beta.zip
 revfly verify-assets
 ```
 
+To switch an existing environment, run `python -m pip uninstall sensory-translator-v2` before installing `revfly`. Both distributions share files and commands.
+
 Assets are stored in `~/.local/share/sensory-translator-v2/bundle` or under `XDG_DATA_HOME`. An explicit `--asset-root` or `SENSORY_TRANSLATOR_V2_ASSET_ROOT` selects a different bundle. Source checkouts with the legacy physics assets keep their checkout defaults. Add `--replace` to install a different verified bundle in place. An extracted `bundle/` directory is also a valid input.
+
+## Install from a GitHub wheel
+
+Download the wheel alongside the runtime ZIP or extract it from the ZIP. Use the same virtual environment as above and replace the PyPI installation command with the wheel command. [GitHub release](https://github.com/IlleJiViN/REvFLY/releases/tag/v2.0.0)
+
+```bash
+python -m pip install './revfly-2.0.0-py3-none-any.whl[physics]'
+```
 
 ## Run a simulation
 
@@ -42,7 +51,7 @@ The first command writes the manifest, physics traces, and top-view video. The s
 ```python
 from contextlib import closing
 
-from sensory_translator_v2.engine import MultiJointEngine
+from revfly import MultiJointEngine
 
 with closing(MultiJointEngine()) as engine:
     goal = engine.goal_from_family(family="swing_scaled", scale=0.92)
@@ -59,18 +68,19 @@ The multi-joint controller commands all 15 muscles. The bundle supports determin
 Run this in the target virtual environment. Download and install the runtime ZIP separately using `install-assets`.
 
 ```bash
-python -m pip install 'sensory-translator-v2[physics] @ git+https://github.com/IlleJiViN/REvFLY.git@v2.0.0a7#subdirectory=packages/sensory-translator-v2'
+python -m pip install 'revfly[physics] @ git+https://github.com/IlleJiViN/REvFLY.git@v2.0.0'
 ```
 
 ## Build and publish a team release
 
-In a checkout that contains the trained checkpoints and FlyMimic assets, build the wheel and export the runtime files:
+Build the wheel and source distribution from the repository root. Export the runtime files from a checkout that contains the trained checkpoints and FlyMimic assets.
 
 ```bash
-python -m pip wheel --no-deps --wheel-dir dist ./packages/sensory-translator-v2
+python -m pip install build
+python -m build
 revfly export-assets --asset-root . --dest dist/bundle --include-v2-models --include-ui
 ```
 
-After editing UI sources, build `apps/control_ui` before exporting. The beta ZIP contains the wheel, `bundle/`, this README, third-party notices, the upstream FlyMimic license, and `SHA256SUMS`. Use wheel assets for the GitHub release. The setuptools source tarball currently omits the package modules because the V2 build project uses the repository's shared `src/` tree.
+After editing UI sources, build `apps/control_ui` before exporting. The beta ZIP contains the wheel, `bundle/`, this README, third-party notices, the upstream FlyMimic license, and `SHA256SUMS`.
 
 After pushing the matching Git tag, attach the wheel and ZIP to that tag's pre-release.

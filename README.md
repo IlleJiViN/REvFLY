@@ -43,17 +43,27 @@ Training used firing rates fitted to muscle inputs and joint-angle errors measur
 
 ## Installation
 
-The release was tested on Linux x86-64 with Python 3.11. The wheel provides the SDK and CLI. The runtime ZIP includes the wheel, model checkpoints, physics assets, and local UI. If you download only the runtime ZIP, extract the wheel first. The release page lists the runtime ZIP alongside GitHub's generated source archives. [v2.0.0a7 release](https://github.com/IlleJiViN/REvFLY/releases/tag/v2.0.0a7)
+Install the Python SDK and CLI from PyPI once the `revfly` distribution is listed.
+
+```bash
+pip install revfly
+revfly --version
+```
+
+You can also download and install the release wheel with `python -m pip install ./revfly-2.0.0-py3-none-any.whl`. [Release wheel](https://github.com/IlleJiViN/REvFLY/releases/download/v2.0.0/revfly-2.0.0-py3-none-any.whl)
+
+To run simulations, install the `physics` extra in a Python 3.11 environment and install the runtime bundle. The bundle supplies the model checkpoints, FlyMimic assets, and local UI. This workflow was tested on Linux x86-64. [Runtime ZIP](https://github.com/IlleJiViN/REvFLY/releases/download/v2.0.0/revfly-2.0.0-local-beta.zip)
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install 'torch>=2.4' --index-url https://download.pytorch.org/whl/cpu
-
-python -m pip install './sensory_translator_v2-2.0.0a7-py3-none-any.whl[physics]'
-revfly install-assets ./revfly-2.0.0a7-local-beta.zip
+python -m pip install 'revfly[physics]'
+revfly install-assets ./revfly-2.0.0-local-beta.zip
 revfly verify-assets
 ```
+
+For a direct wheel install with simulation support, use `python -m pip install './revfly-2.0.0-py3-none-any.whl[physics]'` in the same environment. If you installed the previous `sensory-translator-v2` distribution, run `python -m pip uninstall sensory-translator-v2` before installing `revfly` because the distributions share files and commands.
 
 ### Top-view demo
 
@@ -76,7 +86,7 @@ The swing preset in fast mode reached a joint-angle RMSE of 1.578° in this inst
 ```python
 from contextlib import closing
 
-from sensory_translator_v2.engine import MultiJointEngine
+from revfly import MultiJointEngine
 
 with closing(MultiJointEngine()) as engine:
     goal = engine.goal_from_family(family="swing_scaled", scale=0.92)
@@ -125,7 +135,7 @@ In a separate L-BFGS experiment using gradients from the physics model with the 
 Install the wheel and runtime assets, then clone the matching source tag. The scripts run the gradient-based comparison and the forward search. Set `--asset-root` to the default installation path or to your runtime bundle.
 
 ```bash
-git clone --branch v2.0.0a7 https://github.com/IlleJiViN/REvFLY.git
+git clone --branch v2.0.0 https://github.com/IlleJiViN/REvFLY.git
 cd REvFLY
 assets="${XDG_DATA_HOME:-$HOME/.local/share}/sensory-translator-v2/bundle"
 PYTHONPATH=src python scripts/benchmark_v2_unseen_families.py \
