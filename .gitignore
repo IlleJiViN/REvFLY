@@ -1,0 +1,114 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+
+# C extensions & build directories
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+.venv-arena/
+.venv-flymimic/
+venv/
+ENV/
+env/
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Type checking & linting
+.mypy_cache/
+.ruff_cache/
+
+# Environment variables & secrets
+.env
+.env.*
+*.env
+!.env.example
+!.env.*.example
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Project-specific large data files (MaleCNS connectome, feather, parquet, audio dumps)
+data/
+*.feather
+*.parquet
+*.npz
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+
+# Simulation caches and generated audio dumps
+results/
+*.wav
+
+# Do NOT ignore test audio fixtures if explicitly placed under tests/fixtures/
+!tests/fixtures/*.wav
+
+# Multi-agent coordination metadata caches
+.agents/
+.archive/
+
+# Pinned upstream checkout and generated pilot output (recreated by scripts)
+external/
+results/pilot*/
+results/learning_pairs*/
+results/surrogate*/
+results/translator*/
+results/learned_pilot*/
+results/frame_comparison*/
+results/wavjepa_features*/
+results/translated*/
+results/gui_runs/
+artifacts/
+
+# Local model-response caches and generated presentation/report deliveries.
+# Research documentation intended for version control lives in docs/.
+configs/llm_cache/
+reports/
+*.log
+
+# Frontend dependency and tool caches (including future apps).
+node_modules/
+.astryx-cache/
+
+# Generated FlyGym run videos
+static/video/run_*.*
+static/video/test_trial.*

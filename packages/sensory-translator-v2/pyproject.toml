@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sensory-translator-v2"
+dynamic = ["version"]
+description = "Decoupled continuous motor-rate FFN and persistent FlyMimic MuJoCo engine"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "numpy>=2.0",
+    "torch>=2.4",
+]
+
+[project.optional-dependencies]
+physics = [
+    "mujoco>=3.3.0,<3.4",
+    "dm-control>=1.0.28",
+    "imageio>=2.36",
+    "imageio-ffmpeg>=0.5",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+sensory-engine-v2 = "sensory_translator_v2.engine.cli:main"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = {attr = "sensory_translator_v2.__version__"}
+
+[tool.setuptools.package-dir]
+"" = "../../src"
+
+[tool.setuptools.packages.find]
+where = ["../../src"]
+include = ["sensory_translator_v2*"]

@@ -1,0 +1,682 @@
+{
+  "schema_version": 1,
+  "split": {
+    "checkpoint_selected_epoch": 24,
+    "original_split_families_and_counts": {
+      "train": {
+        "decoupled_group_swing": 4,
+        "reach_and_hold": 4,
+        "rhythmic_double_tap": 4,
+        "swing_scaled": 8
+      },
+      "val": {
+        "decoupled_group_swing": 2,
+        "reach_and_hold": 2,
+        "rhythmic_double_tap": 2,
+        "swing_scaled": 4
+      }
+    },
+    "witness_seed": 0,
+    "source_array_hash_definition": "SHA256 of contiguous little-endian float64 C-order data bytes, without a header.",
+    "distance_definition": "Root mean of squared subtraction between target arrays, pooled over 211 times and 7 joints and converted from radians to degrees. Original target trajectories were recreated with the original training-task builder. Distances describe target separation, not controller error.",
+    "training_and_selection_targets": [
+      {
+        "name": "swing_train_0_s0.75",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "35392905018f5d891668c2ce4d54c112b0f669f2c006cf0ed1c012376986453c"
+      },
+      {
+        "name": "swing_train_1_s0.85",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "fc5b040e619329545421c50e9c77acfb207c15550ed4d189da166da32913bad3"
+      },
+      {
+        "name": "swing_train_2_s0.95",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "e19eca3e63271d09d38ca78dbdd75e7fee5457eaf8f184f09a235993b2d95bbd"
+      },
+      {
+        "name": "swing_train_3_s1.00",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "92920797fd81e51a077663e1873d4d1ffcc5c0493eea09ae38fa25bbb2e8f8be"
+      },
+      {
+        "name": "swing_train_4_s1.08",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "95ea759fdc182213371d0cab416fef74d4491fac1b2c433ef03937797407a05f"
+      },
+      {
+        "name": "swing_train_5_s1.15",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "2c0664f80a0bb5f175d445b2702a742ef97124eaf96a6322f3bad1d2dfb2213f"
+      },
+      {
+        "name": "swing_train_6_s0.95",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "e19eca3e63271d09d38ca78dbdd75e7fee5457eaf8f184f09a235993b2d95bbd"
+      },
+      {
+        "name": "swing_train_7_s0.95",
+        "family": "swing_scaled",
+        "split": "train",
+        "target_sha256_f64le_c_order": "e19eca3e63271d09d38ca78dbdd75e7fee5457eaf8f184f09a235993b2d95bbd"
+      },
+      {
+        "name": "swing_val_0_s0.80",
+        "family": "swing_scaled",
+        "split": "val",
+        "target_sha256_f64le_c_order": "c3a0700bbd0bc788399f05b2f422ea330ba26b5ba392e4c5329bfbb001b9b0b3"
+      },
+      {
+        "name": "swing_val_1_s0.90",
+        "family": "swing_scaled",
+        "split": "val",
+        "target_sha256_f64le_c_order": "5a1d278f66485fafaa5bb9bc42103561a8aede0d83b9d13bb4e2b965d1d3d94f"
+      },
+      {
+        "name": "swing_val_2_s1.03",
+        "family": "swing_scaled",
+        "split": "val",
+        "target_sha256_f64le_c_order": "4b1bf1e1287ee433d5bbc86596fe16db0e45b08edd86cacc6e8e6062e9456e45"
+      },
+      {
+        "name": "swing_val_3_s0.95",
+        "family": "swing_scaled",
+        "split": "val",
+        "target_sha256_f64le_c_order": "e19eca3e63271d09d38ca78dbdd75e7fee5457eaf8f184f09a235993b2d95bbd"
+      },
+      {
+        "name": "decoupled_train_0",
+        "family": "decoupled_group_swing",
+        "split": "train",
+        "target_sha256_f64le_c_order": "296d86533aa2e23c2498b4225d395ee9cb1b23135d29c04e46cd7fff3ca60777"
+      },
+      {
+        "name": "decoupled_train_1",
+        "family": "decoupled_group_swing",
+        "split": "train",
+        "target_sha256_f64le_c_order": "e2683ad5a048e084e4331773ff0bd2c3319cfb409d515ef2b5a303a2eac677f9"
+      },
+      {
+        "name": "decoupled_train_2",
+        "family": "decoupled_group_swing",
+        "split": "train",
+        "target_sha256_f64le_c_order": "7df48c0d5ca5a12fde9560ea869778b1a760d0e8d49881f2c603e80140eb86d5"
+      },
+      {
+        "name": "decoupled_train_3",
+        "family": "decoupled_group_swing",
+        "split": "train",
+        "target_sha256_f64le_c_order": "a28af2de8fdea9c6089f1367d1e09fb6752beff8a9bfd6639b353a06ef4a4610"
+      },
+      {
+        "name": "decoupled_val_0",
+        "family": "decoupled_group_swing",
+        "split": "val",
+        "target_sha256_f64le_c_order": "b3ccc4b79909c0c28939d565c5476fee8ef589aae58e240377aaeb697a98407c"
+      },
+      {
+        "name": "decoupled_val_1",
+        "family": "decoupled_group_swing",
+        "split": "val",
+        "target_sha256_f64le_c_order": "d1a81d37e1c81cde490d900f71cd01a323f2b0a1446e0af1845888365cd334de"
+      },
+      {
+        "name": "tap2x_train_0",
+        "family": "rhythmic_double_tap",
+        "split": "train",
+        "target_sha256_f64le_c_order": "257d7e6513f22272f7696bc1fc867e20b300b12ec2f96fe8591caa94f5b8e109"
+      },
+      {
+        "name": "tap2x_train_1",
+        "family": "rhythmic_double_tap",
+        "split": "train",
+        "target_sha256_f64le_c_order": "1ec57561aea7e31e53810a0437288b36ed42d127b288d30e2f76c86b14e8e0c1"
+      },
+      {
+        "name": "tap2x_train_2",
+        "family": "rhythmic_double_tap",
+        "split": "train",
+        "target_sha256_f64le_c_order": "83d52a1dbf9b736db527105c231c31e90d75d5886fc1cb726fd3b587aa147453"
+      },
+      {
+        "name": "tap2x_train_3",
+        "family": "rhythmic_double_tap",
+        "split": "train",
+        "target_sha256_f64le_c_order": "49086ce6c7308f376eda3eeda7ec35ddc664f725c5832123838e75861b29f005"
+      },
+      {
+        "name": "tap2x_val_0",
+        "family": "rhythmic_double_tap",
+        "split": "val",
+        "target_sha256_f64le_c_order": "e408c900a282f3132d90a381d9a53c7c2624f32a363d24213f0392059adcf3f7"
+      },
+      {
+        "name": "tap2x_val_1",
+        "family": "rhythmic_double_tap",
+        "split": "val",
+        "target_sha256_f64le_c_order": "86719b4e870e0f0e4eedf27d4fd226f06039158df0fc8ae7fa669c13c8895f3f"
+      },
+      {
+        "name": "reach_train_0",
+        "family": "reach_and_hold",
+        "split": "train",
+        "target_sha256_f64le_c_order": "cc7d58c2b78ad0994ac761d0856fb7d41640b9e16f5c662832a962a0cbe6056c"
+      },
+      {
+        "name": "reach_train_1",
+        "family": "reach_and_hold",
+        "split": "train",
+        "target_sha256_f64le_c_order": "a3005ad84f792150d244374ef85a7c5d96c84f3b0de4b59ebf920b809f3571b7"
+      },
+      {
+        "name": "reach_train_2",
+        "family": "reach_and_hold",
+        "split": "train",
+        "target_sha256_f64le_c_order": "cbc6f116540952d653c7a664c06993714246ce464978c7256c724743a0c64714"
+      },
+      {
+        "name": "reach_train_3",
+        "family": "reach_and_hold",
+        "split": "train",
+        "target_sha256_f64le_c_order": "848d641a636a1bc5817546e353fd55ccb2d366d0903a7c61d47c005053565c8a"
+      },
+      {
+        "name": "reach_val_0",
+        "family": "reach_and_hold",
+        "split": "val",
+        "target_sha256_f64le_c_order": "4355f0b993a26050672982acc3fea3a7e15a436ddfab2d2ef6887e6274f59a40"
+      },
+      {
+        "name": "reach_val_1",
+        "family": "reach_and_hold",
+        "split": "val",
+        "target_sha256_f64le_c_order": "42c67910c5e0e1b6baff0261d882c7b4b13ead9bd7ec5b8e2ebfdf8885875745"
+      }
+    ],
+    "cases": [
+      {
+        "name": "sequential_group_pulses_1",
+        "family": "sequential_group_pulses",
+        "target_sha256_f64le_c_order": "97286010bebd210620b2d8ac8b2dc9353a5014496ebc293232e9cb3d10bf12b3",
+        "witness_knots_sha256_f64le_c_order": "81079e723731d8e9cdb577aec80dfd808deb050ff6c52922e8d27cd9c90754f8",
+        "witness_excitation_sha256_f64le_c_order": "01576c0396904a3490ffd11427c7bdd20336b2a052178bead7a0b61d0e56ab02",
+        "joint_excursion_deg": [
+          24.791313387865987,
+          37.77050417490391,
+          21.101729307904126,
+          97.21875004414015,
+          56.30139393216088,
+          84.42163345216909,
+          90.0029143721807
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 22.856970240090412
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_0",
+          "trajectory_distance_rmse_deg": 25.568124509431414
+        },
+        "generator_parameters": {
+          "half_width_fraction": 0.14,
+          "coxa_center_fraction": 0.18,
+          "coxa_amplitude_fraction": 0.22,
+          "femur_center_fraction": 0.47,
+          "femur_amplitude_fraction": -0.19,
+          "tibia_center_fraction": 0.76,
+          "tibia_amplitude_fraction": 0.23
+        }
+      },
+      {
+        "name": "sequential_group_pulses_2",
+        "family": "sequential_group_pulses",
+        "target_sha256_f64le_c_order": "f799d540382e19fa0ee8702891062eb4302ed017456ed0c19721afe25d462294",
+        "witness_knots_sha256_f64le_c_order": "73d8915a80ce09afb667994117ac44b7f7795dbb1e637c66698a9230a2e54ab5",
+        "witness_excitation_sha256_f64le_c_order": "daf6ea8bd0497004beb31cab74b065240bb835c7c106d6aa3889271aff7e958c",
+        "joint_excursion_deg": [
+          21.41119136078624,
+          14.834033328801858,
+          8.277428087715908,
+          50.08626584644681,
+          40.38881426686471,
+          46.18680634126184,
+          90.04894375728651
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 11.294750503130754
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_1",
+          "trajectory_distance_rmse_deg": 15.919492676681282
+        },
+        "generator_parameters": {
+          "half_width_fraction": 0.16,
+          "coxa_center_fraction": 0.23,
+          "coxa_amplitude_fraction": -0.18,
+          "femur_center_fraction": 0.5,
+          "femur_amplitude_fraction": 0.24,
+          "tibia_center_fraction": 0.8,
+          "tibia_amplitude_fraction": -0.19
+        }
+      },
+      {
+        "name": "sequential_group_pulses_3",
+        "family": "sequential_group_pulses",
+        "target_sha256_f64le_c_order": "f7232b102e13eb98d884a7955bbf6ff7112e9aba4a55533326573b7d65441b8d",
+        "witness_knots_sha256_f64le_c_order": "532fb02e6eb5503d865be1f9454b37cc2dd62279475d5ada92766894dd7b7a1d",
+        "witness_excitation_sha256_f64le_c_order": "013a11f01efe7f749bfbd76a9a61e02b4b055a838de455ae32b087ea73f22eeb",
+        "joint_excursion_deg": [
+          25.011863789911203,
+          37.459448143967094,
+          19.667056616910866,
+          59.85859222794315,
+          42.774288155540816,
+          44.484737867181956,
+          90.03891540054697
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 10.719283166692867
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_0",
+          "trajectory_distance_rmse_deg": 16.803785871781113
+        },
+        "generator_parameters": {
+          "half_width_fraction": 0.13,
+          "coxa_center_fraction": 0.14,
+          "coxa_amplitude_fraction": 0.26,
+          "femur_center_fraction": 0.4,
+          "femur_amplitude_fraction": 0.22,
+          "tibia_center_fraction": 0.7,
+          "tibia_amplitude_fraction": -0.24
+        }
+      },
+      {
+        "name": "chirped_antagonists_1",
+        "family": "chirped_antagonists",
+        "target_sha256_f64le_c_order": "603d55b867f93289ccf0319335107b5bdc17853f26c4e203dd967c0d052b2758",
+        "witness_knots_sha256_f64le_c_order": "ba7b168020c1db73b8f880659e73d399dc062eed8b4be532837eb071e147abc6",
+        "witness_excitation_sha256_f64le_c_order": "3ccd7082f3c722ce1f1484ce892cf5d10eae50fcc4d8d72697ba4f907a8dbd22",
+        "joint_excursion_deg": [
+          21.689174796098513,
+          22.790265248289455,
+          20.374041324491877,
+          62.48901203838335,
+          60.99469253225027,
+          51.16336938366213,
+          90.88108783316008
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 12.434415219745834
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_1",
+          "trajectory_distance_rmse_deg": 15.997941738751123
+        },
+        "generator_parameters": {
+          "start_cycles_per_trial": 0.55,
+          "end_cycles_per_trial": 5.1,
+          "amplitude_fraction": 0.19
+        }
+      },
+      {
+        "name": "chirped_antagonists_2",
+        "family": "chirped_antagonists",
+        "target_sha256_f64le_c_order": "573fbc5ffa08cf9357e75049929dbc17c6357ce5b7358fb1c1b278c776b57c44",
+        "witness_knots_sha256_f64le_c_order": "5b387522ee7d95a0d8d6128a0941b378b62e7ffd354747c150e175ccf00290d2",
+        "witness_excitation_sha256_f64le_c_order": "09f3b9cac7eae629f0eff08d299666c938cb4dd49c0751075a0508f43967edbd",
+        "joint_excursion_deg": [
+          21.418770141358728,
+          27.600364119461993,
+          21.438181743898813,
+          66.66556391398397,
+          56.56088331427526,
+          53.397690654268146,
+          90.99168108821388
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 15.155575959069624
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_1",
+          "trajectory_distance_rmse_deg": 19.139677100138115
+        },
+        "generator_parameters": {
+          "start_cycles_per_trial": 1.2,
+          "end_cycles_per_trial": 6.5,
+          "amplitude_fraction": 0.21
+        }
+      },
+      {
+        "name": "chirped_antagonists_3",
+        "family": "chirped_antagonists",
+        "target_sha256_f64le_c_order": "a367be3cdee7b3c4e330719d3b5361b6b210b94cd251b84a8ee78ee5cdc5c64a",
+        "witness_knots_sha256_f64le_c_order": "21ea6475fc0bbc9512524bea7dc2a0c9149fc3d16dfe68e246ac09d2b67c7037",
+        "witness_excitation_sha256_f64le_c_order": "c3604f4019a8d0ae1283bcea128ab06a81e1d5173cf099f0e1b1a4420d21f770",
+        "joint_excursion_deg": [
+          19.84521267462665,
+          35.049241055787505,
+          25.25073205994596,
+          65.11945827945532,
+          65.17665821570847,
+          55.53993283328202,
+          92.28258628977544
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 13.96391302669243
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_1",
+          "trajectory_distance_rmse_deg": 14.832919111266492
+        },
+        "generator_parameters": {
+          "start_cycles_per_trial": 0.8,
+          "end_cycles_per_trial": 4.2,
+          "amplitude_fraction": 0.25
+        }
+      },
+      {
+        "name": "coactivation_release_1",
+        "family": "coactivation_release",
+        "target_sha256_f64le_c_order": "f8b496bc0cea5c75a9caea9035b3b7a8958e47872c2e8f1e39d0220d4cfade63",
+        "witness_knots_sha256_f64le_c_order": "b02d703e03900265ada8fc599f2d0f865d95da52996c49ea488d21a7c66518e4",
+        "witness_excitation_sha256_f64le_c_order": "5c69a6442b078e6a88d540b91819a0042383c26056a91cf8c9644ffd39a3bab3",
+        "joint_excursion_deg": [
+          24.458607770554764,
+          15.344737961409763,
+          8.242469962969945,
+          56.0401949421325,
+          48.44756501085779,
+          53.00585207844263,
+          88.22826793560137
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 12.661539242876868
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_1",
+          "trajectory_distance_rmse_deg": 15.963162452187088
+        },
+        "generator_parameters": {
+          "squeeze_center_fraction": 0.27,
+          "recoil_center_fraction": 0.59,
+          "amplitude_fraction": 0.24
+        }
+      },
+      {
+        "name": "coactivation_release_2",
+        "family": "coactivation_release",
+        "target_sha256_f64le_c_order": "397329f0b2f381217e43ea10e458b11711271cc98d1e77df16d417d785eb9f19",
+        "witness_knots_sha256_f64le_c_order": "73df0eee40e5597f78238de9d98ea4c726315b3a2a7eb9226ab56f82f6338fb8",
+        "witness_excitation_sha256_f64le_c_order": "fd8f3c609842c1242d78c6a801d3034026ebe3c653b65f868a96bc61f304fec3",
+        "joint_excursion_deg": [
+          25.50108707498458,
+          20.495971094415737,
+          12.864198151899387,
+          64.06343450789153,
+          46.00163759304422,
+          49.93429716811122,
+          89.19199124368389
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 12.51726042898955
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_1",
+          "trajectory_distance_rmse_deg": 14.662191539922802
+        },
+        "generator_parameters": {
+          "squeeze_center_fraction": 0.35,
+          "recoil_center_fraction": 0.71,
+          "amplitude_fraction": 0.29
+        }
+      },
+      {
+        "name": "coactivation_release_3",
+        "family": "coactivation_release",
+        "target_sha256_f64le_c_order": "1e4ca325337df82c254e46555d6411b881eb79806cb3f2b5e84b4834f4bbbe4f",
+        "witness_knots_sha256_f64le_c_order": "0075eb17700ea5a841c27d69ba19659e78a0e5afd4a2be2ad4dfc57402f61346",
+        "witness_excitation_sha256_f64le_c_order": "a0dd5d8e11879b2a0ef1e3fd467d67b200151868924c8b30de06b6c45a0b42c5",
+        "joint_excursion_deg": [
+          26.839812887638683,
+          17.139510129293605,
+          9.41319041595234,
+          66.93054716550435,
+          44.108528491140646,
+          57.43739969886862,
+          90.06157249922555
+        ],
+        "nearest_training_target": {
+          "case": "reach_train_1",
+          "trajectory_distance_rmse_deg": 13.879145026882998
+        },
+        "nearest_selection_target": {
+          "case": "tap2x_val_1",
+          "trajectory_distance_rmse_deg": 15.057608415795526
+        },
+        "generator_parameters": {
+          "squeeze_center_fraction": 0.47,
+          "recoil_center_fraction": 0.79,
+          "amplitude_fraction": 0.32
+        }
+      }
+    ]
+  },
+  "target_archive_sha256": "5cef3df206023111ccde443fed2e8e030a5f48bbc27da12abb86e2227a031992",
+  "experiments": {
+    "primary_checked_vjp": {
+      "model_id": "20261116_v2_multijoint15_resnorm",
+      "checkpoint_sha256": "45879505e182e205b3554903a25a7e89362304ada2a307f65e1a01731f5a3585",
+      "model_frozen": true,
+      "budget_s": 30.0,
+      "threshold_deg": 5.729577951308233,
+      "seed": 20261116,
+      "profile": "adjacent_static_parent_v1",
+      "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+      "python": "3.11.17",
+      "torch": "2.14.1+cu130",
+      "numpy": "2.4.6",
+      "physics_hashes": {
+        "raw_xml_sha256": "59d7db31eb756c61661065c16cfbbb1e3400da1a9df8b1f02fe79dc87bd48724",
+        "mesh_tree_sha256": "e399fa3e77d9be719323b6076179c56eb0376eb45af83c75295426dc5ad20422",
+        "teacher_sha256": "285926477784ac9ea1657f2d422642696bc3b4cd5866c7e2235e7fde964a5ebd",
+        "profile_name": "adjacent_static_parent_v1",
+        "profile_rule_sha256": "638f24773de387373485c91f52797a5c4cf234246d0cf8c95f0d1bf258055e84",
+        "materialized_xml_sha256": null,
+        "asset_manifest_sha256": "0bed22eb40f0f7d408320ea94026b44202e634ee67de5f322ce44ee4f56dff3c"
+      },
+      "warm_workers": true,
+      "cpu_affinities": [
+        2,
+        6,
+        10
+      ],
+      "trial_order": "counterbalanced within each target, methods run serially on the same CPU",
+      "joint_names": [
+        "joint_LFCoxa_yaw",
+        "joint_LFCoxa_pitch",
+        "joint_LFCoxa_roll",
+        "joint_LFTrochanter_yaw",
+        "joint_LFTrochanter_pitch",
+        "joint_LFTrochanter_roll",
+        "joint_LFTibia_pitch"
+      ],
+      "training_families": [
+        "swing_scaled",
+        "decoupled_group_swing",
+        "rhythmic_double_tap",
+        "reach_and_hold"
+      ],
+      "test_families": {
+        "sequential_group_pulses": "Separate nonperiodic bursts fire coxa, femur, then tibia.",
+        "chirped_antagonists": "Antagonistic drives accelerate on a smooth envelope with intergroup phase offsets.",
+        "coactivation_release": "Muscles coactivate briefly, release below baseline, and rebound asymmetrically."
+      },
+      "parameterization": {
+        "knots_per_pool": 105,
+        "max_rate_hz": 200.0,
+        "rate_scale_hz": 100.0,
+        "tau_ms": 2.0,
+        "control_bin_ms": 2
+      },
+      "optimizer": {
+        "name": "projected L-BFGS",
+        "initial_step_rms_hz": 1.0,
+        "max_step_rms_hz": 12.0,
+        "line_search_factors": [
+          2.0,
+          1.0,
+          0.5,
+          0.25,
+          0.1
+        ],
+        "history": 5,
+        "check_directions": true
+      },
+      "method": {
+        "direct": "checkpoint's common, target-independent base_knots_hz + shared physical refinement",
+        "model": "frozen ResidualNorm goal-conditioned initial knots + shared physical refinement"
+      },
+      "verification": "independent physics replay after the search, measured separately",
+      "sources": {
+        "benchmark_v2_unseen_families.py": "169e99c6fc97ff07ba5255691ba90c9f304b916ad9af40fc8a0c8291cb10acbe",
+        "benchmark_v2_unseen_solver.py": "f77adf18129845af98f07fd08466c959a4097dad5282bc7d4235415043e229b2",
+        "benchmark_v2_unseen_targets.py": "4e6f5203c74680e231b897f09629d5aaa2dcc2371a14711c515ec470a15c22db"
+      },
+      "engine_base_revision": "3e5d75cac11c1bb6b1459c450af116eba75a2a8e",
+      "role": "planned before evaluation",
+      "paired_results": {
+        "model_wins": 9,
+        "direct_wins": 0,
+        "exact_ties": 0
+      },
+      "replay_audit": {
+        "target_witness_replays_bitwise": 9,
+        "selected_trajectory_replays_bitwise": 18,
+        "pooled_rmse_joint_rmse_max_absolute_errors_verified": true,
+        "threshold_and_deadline_verified": true
+      },
+      "stop_counts": {
+        "direct": {
+          "gradient_gate_rejected": 9
+        },
+        "model": {
+          "gradient_gate_rejected": 6,
+          "time_budget": 3
+        }
+      }
+    },
+    "supplemental_forward_search": {
+      "model_id": "20261116_v2_multijoint15_resnorm",
+      "checkpoint_sha256": "45879505e182e205b3554903a25a7e89362304ada2a307f65e1a01731f5a3585",
+      "model_frozen": true,
+      "budget_s": 30.0,
+      "threshold_deg": 5.729577951308233,
+      "seed": 20261116,
+      "profile": "adjacent_static_parent_v1",
+      "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+      "python": "3.11.17",
+      "torch": "2.14.1+cu130",
+      "numpy": "2.4.6",
+      "physics_hashes": {
+        "raw_xml_sha256": "59d7db31eb756c61661065c16cfbbb1e3400da1a9df8b1f02fe79dc87bd48724",
+        "mesh_tree_sha256": "e399fa3e77d9be719323b6076179c56eb0376eb45af83c75295426dc5ad20422",
+        "teacher_sha256": "285926477784ac9ea1657f2d422642696bc3b4cd5866c7e2235e7fde964a5ebd",
+        "profile_name": "adjacent_static_parent_v1",
+        "profile_rule_sha256": "638f24773de387373485c91f52797a5c4cf234246d0cf8c95f0d1bf258055e84",
+        "materialized_xml_sha256": null,
+        "asset_manifest_sha256": "0bed22eb40f0f7d408320ea94026b44202e634ee67de5f322ce44ee4f56dff3c"
+      },
+      "warm_workers": true,
+      "cpu_affinities": [
+        2,
+        6,
+        10
+      ],
+      "trial_order": "counterbalanced within each target, methods run serially on the same CPU",
+      "joint_names": [
+        "joint_LFCoxa_yaw",
+        "joint_LFCoxa_pitch",
+        "joint_LFCoxa_roll",
+        "joint_LFTrochanter_yaw",
+        "joint_LFTrochanter_pitch",
+        "joint_LFTrochanter_roll",
+        "joint_LFTibia_pitch"
+      ],
+      "training_families": [
+        "swing_scaled",
+        "decoupled_group_swing",
+        "rhythmic_double_tap",
+        "reach_and_hold"
+      ],
+      "test_families": {
+        "sequential_group_pulses": "Separate nonperiodic bursts fire coxa, femur, then tibia.",
+        "chirped_antagonists": "Antagonistic drives accelerate on a smooth envelope with intergroup phase offsets.",
+        "coactivation_release": "Muscles coactivate briefly, release below baseline, and rebound asymmetrically."
+      },
+      "parameterization": {
+        "knots_per_pool": 105,
+        "max_rate_hz": 200.0,
+        "rate_scale_hz": 100.0,
+        "tau_ms": 2.0,
+        "control_bin_ms": 2
+      },
+      "optimizer": {
+        "name": "projected smooth pattern search",
+        "initial_step_hz": 6.0,
+        "minimum_step_hz": 0.375,
+        "direction_basis": "three cosine modes crossed with four global and fifteen per-muscle directions",
+        "step_rule": "halve after a sweep with no improvement",
+        "derivatives": false
+      },
+      "method": {
+        "direct": "checkpoint's common, target-independent base_knots_hz + shared physical refinement",
+        "model": "frozen ResidualNorm goal-conditioned initial knots + shared physical refinement"
+      },
+      "verification": "independent physics replay after the search, measured separately",
+      "sources": {
+        "benchmark_v2_unseen_families.py": "169e99c6fc97ff07ba5255691ba90c9f304b916ad9af40fc8a0c8291cb10acbe",
+        "benchmark_v2_unseen_forward.py": "9432b933fca3eee5975ffb65da8c408bbe38e8bce087bed83d2501917fef50fa",
+        "benchmark_v2_unseen_pattern.py": "b27e09ce12b080c42d18e44ae7ad4d789feda8b0546cf763d44b76a56290fc9b",
+        "benchmark_v2_unseen_solver.py": "f77adf18129845af98f07fd08466c959a4097dad5282bc7d4235415043e229b2",
+        "benchmark_v2_unseen_targets.py": "4e6f5203c74680e231b897f09629d5aaa2dcc2371a14711c515ec470a15c22db"
+      },
+      "engine_base_revision": "3e5d75cac11c1bb6b1459c450af116eba75a2a8e",
+      "role": "exploratory, added after the primary gradient gate failures",
+      "paired_results": {
+        "model_wins": 9,
+        "direct_wins": 0,
+        "exact_ties": 0
+      },
+      "replay_audit": {
+        "target_witness_replays_bitwise": 9,
+        "selected_trajectory_replays_bitwise": 18,
+        "pooled_rmse_joint_rmse_max_absolute_errors_verified": true,
+        "threshold_and_deadline_verified": true
+      },
+      "stop_counts": {
+        "direct": {
+          "time_budget": 9
+        },
+        "model": {
+          "time_budget": 9
+        }
+      }
+    }
+  }
+}

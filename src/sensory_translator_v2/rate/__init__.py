@@ -1,0 +1,60 @@
+"""Rate policy network and continuous neuromuscular excitation bridge."""
+
+from .bridge import (
+    LF_15_POOLS,
+    LF_ALL_MOTOR_BODY_IDS,
+    LF_TIBIA_POOLS,
+    MOTOR_BODY_IDS,
+    MotorPool,
+    MotorRateProtocol,
+    POOL_NAMES,
+    differentiable_bridge_motor_spikes,
+    differentiable_bridge_pool_spikes,
+    direct_multichannel_rate_waveform,
+    direct_pool_rate_waveform,
+    multichannel_rate_to_excitation,
+    rate_to_excitation,
+    rates_to_motor_counts,
+)
+from .model import (
+    ConditionalRateFFN,
+    DEFAULT_MAX_RATE_HZ,
+    RATE_ARCHITECTURES,
+    RatePolicyProtocol,
+    ResidualNormRateMLP,
+    build_rate_policy_from_config,
+    load_rate_checkpoint,
+    register_rate_architecture,
+    save_rate_checkpoint,
+)
+from .optim import lbfgs_direction
+from .trainer import TrainingConfig, train_rate_model
+
+__all__ = [
+    "ConditionalRateFFN",
+    "DEFAULT_MAX_RATE_HZ",
+    "LF_15_POOLS",
+    "LF_ALL_MOTOR_BODY_IDS",
+    "LF_TIBIA_POOLS",
+    "MOTOR_BODY_IDS",
+    "MotorPool",
+    "MotorRateProtocol",
+    "POOL_NAMES",
+    "RATE_ARCHITECTURES",
+    "RatePolicyProtocol",
+    "ResidualNormRateMLP",
+    "TrainingConfig",
+    "build_rate_policy_from_config",
+    "differentiable_bridge_motor_spikes",
+    "differentiable_bridge_pool_spikes",
+    "direct_multichannel_rate_waveform",
+    "direct_pool_rate_waveform",
+    "lbfgs_direction",
+    "load_rate_checkpoint",
+    "multichannel_rate_to_excitation",
+    "rate_to_excitation",
+    "rates_to_motor_counts",
+    "register_rate_architecture",
+    "save_rate_checkpoint",
+    "train_rate_model",
+]
