@@ -43,7 +43,7 @@ Training used firing rates fitted to muscle inputs and joint-angle errors measur
 
 ## Installation
 
-Install the Python SDK and CLI from PyPI once the `revfly` distribution is listed.
+Install the Python SDK and CLI from PyPI. [PyPI package](https://pypi.org/project/revfly/)
 
 ```bash
 pip install revfly

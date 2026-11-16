@@ -4,7 +4,7 @@ Python SDK and CLI for translating joint trajectories into continuous motor rate
 
 ## Install from PyPI
 
-Once the `revfly` distribution is listed on PyPI, install it for the SDK and CLI.
+Install the Python SDK and CLI from PyPI. [PyPI package](https://pypi.org/project/revfly/)
 
 ```bash
 python -m pip install revfly
