@@ -1,4 +1,4 @@
-"""Thread-safe HTTP API server and optional workbench for Sensory Translator v2."""
+"""Thread-safe HTTP API server and optional workbench for REvFLY."""
 
 from __future__ import annotations
 

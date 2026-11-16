@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sensory-translator-v2"
 dynamic = ["version"]
-description = "Decoupled continuous motor-rate FFN and persistent FlyMimic MuJoCo engine"
+description = "REvFLY engine for inverse motor-rate control in FlyMimic MuJoCo"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"

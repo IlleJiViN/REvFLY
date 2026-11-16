@@ -1,4 +1,4 @@
-"""Command-line entry point for Sensory Translator v2 (`sensory-engine-v2`)."""
+"""Command-line entry point for REvFLY (`sensory-engine-v2`)."""
 
 from __future__ import annotations
 
@@ -101,7 +101,7 @@ def _load_target_file(path: Path) -> tuple[np.ndarray, np.ndarray | None]:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="sensory-engine-v2",
-        description="Sensory Translator v2 decoupled continuous motor-rate engine CLI.",
+        description="REvFLY motor-rate control and simulation CLI.",
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     common = argparse.ArgumentParser(add_help=False)

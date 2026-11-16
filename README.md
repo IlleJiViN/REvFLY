@@ -1,6 +1,6 @@
-# Sensory Translator
+# REvFLY
 
-초파리 시뮬레이터에 **목표 관절 궤적을 주면, 그 움직임을 만드는 연속 운동 발화율을 추정하는 Python 엔진**입니다. V2는 FlyMimic의 MuJoCo 근골격 모델에서 왼쪽 앞다리 관절 7축과 근육 15개를 제어합니다. Python API, CLI, 로컬 HTTP API와 탑뷰 실험 화면을 제공합니다.
+초파리 시뮬레이터에 **목표 관절 궤적을 주면, 그 움직임을 만드는 연속 운동 발화율을 추정하는 Python 엔진**입니다. REvFLY는 FlyMimic의 MuJoCo 근골격 모델에서 왼쪽 앞다리 관절 7축과 근육 15개를 제어합니다. Python API, CLI, 로컬 HTTP API와 탑뷰 실험 화면을 제공합니다.
 
 학습에 사용하지 않은 합성 동작 3계열의 9개 목표에서, 목표에 맞춰 모델이 초기 발화율을 만들었을 때 같은 30초의 순방향 보정으로 평균 각도 RMSE가 **10.412°에서 6.056°**로 낮아졌습니다. 5.7296° 기준의 실패는 **9/9에서 3/9**로 줄었습니다. [실험 절차와 전체 결과](reports/unseen_motion_families_v2/README.md)
 
@@ -43,15 +43,15 @@ flowchart LR
 
 ## 설치
 
-Linux x86-64와 Python 3.11에서 확인했습니다. 엔진 wheel과 런타임 ZIP은 [GitHub v2.0.0a5 릴리스](https://github.com/IlleJiViN/sensory-translator-v2/releases/tag/v2.0.0a5)에서 다운로드합니다. wheel에는 SDK와 CLI가 들어 있습니다. 런타임 ZIP에는 wheel과 체크포인트, 물리 자산, 로컬 UI가 들어 있습니다. ZIP만 받았다면 먼저 wheel을 꺼냅니다. GitHub 릴리스의 자동 생성 소스 ZIP과 런타임 ZIP의 내용이 다릅니다.
+Linux x86-64와 Python 3.11에서 확인했습니다. 엔진 wheel과 런타임 ZIP은 [GitHub v2.0.0a6 릴리스](https://github.com/IlleJiViN/revfly/releases/tag/v2.0.0a6)에서 다운로드합니다. wheel에는 SDK와 CLI가 들어 있습니다. 런타임 ZIP에는 wheel과 체크포인트, 물리 자산, 로컬 UI가 들어 있습니다. ZIP만 받았다면 먼저 wheel을 꺼냅니다. GitHub 릴리스의 자동 생성 소스 ZIP과 런타임 ZIP의 내용이 다릅니다.
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install 'torch>=2.4' --index-url https://download.pytorch.org/whl/cpu
 
-python -m pip install './sensory_translator_v2-2.0.0a5-py3-none-any.whl[physics]'
-sensory-engine-v2 install-assets ./sensory-engine-2.0.0a5-local-beta.zip
+python -m pip install './sensory_translator_v2-2.0.0a6-py3-none-any.whl[physics]'
+sensory-engine-v2 install-assets ./revfly-2.0.0a6-local-beta.zip
 sensory-engine-v2 verify-assets
 ```
 
@@ -125,8 +125,8 @@ HTTP 서버는 목표 생성, 비동기 실행과 결과 다운로드를 제공�
 위 패키지와 런타임 자산을 설치한 환경에서 동일 버전의 소스를 받습니다. 다음 두 스크립트는 각각 기울기 비교와 순방향 비교를 실행합니다. `--asset-root`에는 기본 설치 위치 또는 사용 중인 번들의 경로를 지정합니다.
 
 ```bash
-git clone --branch v2.0.0a5 https://github.com/IlleJiViN/sensory-translator-v2.git
-cd sensory-translator-v2
+git clone --branch v2.0.0a6 https://github.com/IlleJiViN/revfly.git
+cd revfly
 assets="${XDG_DATA_HOME:-$HOME/.local/share}/sensory-translator-v2/bundle"
 PYTHONPATH=src python scripts/benchmark_v2_unseen_families.py \
   --asset-root "$assets" --output results/unseen_lbfgs --budget-s 30
@@ -138,10 +138,10 @@ PYTHONPATH=src python scripts/benchmark_v2_unseen_forward.py \
 
 ## 연구 범위와 이력
 
-- **V2에서 확인한 것**은 한 시뮬레이션 환경에서 목표 관절 궤적을 발화율 명령으로 역추정하고, 실제 물리 재생으로 비교하는 과정입니다. 9개 목표는 몸통 고정 420 ms의 합성 과제입니다. 살아 있는 초파리 제어, 자연어 명령 수행, 전신 보행, 전극 자극 실험에서의 성능은 별도 검증이 필요합니다.
+- **REvFLY에서 확인한 것**은 한 시뮬레이션 환경에서 목표 관절 궤적을 발화율 명령으로 역추정하고, 실제 물리 재생으로 비교하는 과정입니다. 9개 목표는 몸통 고정 420 ms의 합성 과제입니다. 살아 있는 초파리 제어, 자연어 명령 수행, 전신 보행, 전극 자극 실험에서의 성능은 별도 검증이 필요합니다.
 - **초기 청각 실험**은 합성 음원에서 사람 청각 모델과 초파리 청각 시뮬레이터의 반응 관계를 맞추는 실험이었습니다. 실제 음악 파일럿은 음원 준비 단계까지 진행했습니다.
-- **이전 감각→운동 GNN 실험**은 시각·후각 자극에서 운동뉴런 막전위를 예측했습니다. 해당 실험의 주 기준에서 평균 예측과 ridge 회귀 기준선을 넘지 못했습니다. V2의 7축 역제어 경로는 목표각을 입력으로 받는 MLP와 근골격 물리 모델을 사용합니다.
+- **이전 감각→운동 GNN 실험**은 시각·후각 자극에서 운동뉴런 막전위를 예측했습니다. 해당 실험의 주 기준에서 평균 예측과 ridge 회귀 기준선을 넘지 못했습니다. REvFLY의 7축 역제어 경로는 목표각을 입력으로 받는 MLP와 근골격 물리 모델을 사용합니다.
 
 ## 출처
 
-근골격 물리 모델은 Özdil et al.의 *Musculoskeletal simulation of limb movement biomechanics in Drosophila melanogaster* (ICLR 2026)를 사용합니다. V2 런타임 ZIP에는 FlyMimic의 물리 XML과 메시, 데모 `0002`의 참조 관절각 일부와 시뮬레이션에서 생성한 교사 롤아웃이 포함됩니다. [논문](https://proceedings.iclr.cc/paper_files/paper/2026/hash/222843b731e2c7813291586e2b39fe89-Abstract-Conference.html) · [FlyMimic 사용 버전](https://github.com/gizemozd/FlyMimic/tree/9ea11316) · [FlyMimic 라이선스](FlyMimic-LICENSE.txt) · [UI 제3자 고지](THIRD_PARTY_NOTICES.txt)
+근골격 물리 모델은 Özdil et al.의 *Musculoskeletal simulation of limb movement biomechanics in Drosophila melanogaster* (ICLR 2026)를 사용합니다. REvFLY 런타임 ZIP에는 FlyMimic의 물리 XML과 메시, 데모 `0002`의 참조 관절각 일부와 시뮬레이션에서 생성한 교사 롤아웃이 포함됩니다. [논문](https://proceedings.iclr.cc/paper_files/paper/2026/hash/222843b731e2c7813291586e2b39fe89-Abstract-Conference.html) · [FlyMimic 사용 버전](https://github.com/gizemozd/FlyMimic/tree/9ea11316) · [FlyMimic 라이선스](FlyMimic-LICENSE.txt) · [UI 제3자 고지](THIRD_PARTY_NOTICES.txt)

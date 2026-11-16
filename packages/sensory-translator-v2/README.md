@@ -1,15 +1,15 @@
-# sensory-translator-v2
+# REvFLY Python SDK and CLI
 
 Python SDK and CLI for translating joint trajectories into continuous motor rates and replaying them with FlyMimic MuJoCo. The wheel installs the engine and its APIs. The release ZIP supplies the checkpoints, physics assets, and optional local Control Studio.
 
 ## Install from GitHub Releases
 
-Download the ZIP from [the release page](https://github.com/IlleJiViN/sensory-translator-v2/releases/tag/v2.0.0a5). It includes the wheel and the runtime bundle. Extract the wheel into the same directory as the ZIP before installing, or download it separately. With GitHub CLI configured, you can download both files together.
+Download the ZIP from [the release page](https://github.com/IlleJiViN/revfly/releases/tag/v2.0.0a6). It includes the wheel and the runtime bundle. Extract the wheel into the same directory as the ZIP before installing, or download it separately. With GitHub CLI configured, you can download both files together.
 
 ```bash
-gh release download v2.0.0a5 --repo IlleJiViN/sensory-translator-v2 \
-  --pattern 'sensory_translator_v2-2.0.0a5-*.whl' \
-  --pattern 'sensory-engine-2.0.0a5-local-beta.zip'
+gh release download v2.0.0a6 --repo IlleJiViN/revfly \
+  --pattern 'sensory_translator_v2-2.0.0a6-*.whl' \
+  --pattern 'revfly-2.0.0a6-local-beta.zip'
 ```
 
 The physics workflow was tested on Linux x86-64 with Python 3.11. On Linux, you can install CPU Torch before the wheel to avoid pulling CUDA dependencies. Rendering uses the host's OpenGL/EGL libraries.
@@ -18,8 +18,8 @@ The physics workflow was tested on Linux x86-64 with Python 3.11. On Linux, you 
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install 'torch>=2.4' --index-url https://download.pytorch.org/whl/cpu
-python -m pip install './sensory_translator_v2-2.0.0a5-py3-none-any.whl[physics]'
-sensory-engine-v2 install-assets ./sensory-engine-2.0.0a5-local-beta.zip
+python -m pip install './sensory_translator_v2-2.0.0a6-py3-none-any.whl[physics]'
+sensory-engine-v2 install-assets ./revfly-2.0.0a6-local-beta.zip
 sensory-engine-v2 verify-assets
 ```
 
@@ -59,7 +59,7 @@ The multi-joint controller commands all 15 muscles. The bundle supports determin
 Run this in the target virtual environment. Download and install the runtime ZIP separately using `install-assets`.
 
 ```bash
-python -m pip install 'sensory-translator-v2[physics] @ git+https://github.com/IlleJiViN/sensory-translator-v2.git@v2.0.0a5#subdirectory=packages/sensory-translator-v2'
+python -m pip install 'sensory-translator-v2[physics] @ git+https://github.com/IlleJiViN/revfly.git@v2.0.0a6#subdirectory=packages/sensory-translator-v2'
 ```
 
 ## Build and publish a team release

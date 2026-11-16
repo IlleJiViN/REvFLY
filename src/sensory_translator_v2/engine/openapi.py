@@ -1,4 +1,4 @@
-"""OpenAPI 3.1 document builder for the Sensory Translator v2 HTTP API."""
+"""OpenAPI 3.1 document builder for the REvFLY HTTP API."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ def build_openapi_v2_spec(*, base_url: str = "http://127.0.0.1:8766") -> dict[st
     return {
         "openapi": "3.1.0",
         "info": {
-            "title": "Sensory Translator v2 Rate-Control Engine",
+            "title": "REvFLY",
             "version": __version__,
             "description": (
                 "Decoupled continuous motor-rate FFN + persistent FlyMimic MuJoCo "

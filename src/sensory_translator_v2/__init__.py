@@ -1,4 +1,4 @@
-"""Sensory Translator v2 decoupled rate-control and simulation engine."""
+"""REvFLY motor-rate control and simulation engine."""
 
 from .contracts import (
     AssetValidationError,
@@ -56,7 +56,7 @@ from .contracts import (
     V2Error,
 )
 
-__version__ = "2.0.0a5"
+__version__ = "2.0.0a6"
 
 __all__ = [
     "__version__",

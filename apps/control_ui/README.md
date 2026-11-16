@@ -1,4 +1,4 @@
-# Sensory Engine Control Studio
+# REvFLY Control Studio
 
 실제 `@astryxdesign/core` 0.7.15와 React 19를 사용하는 로컬 제어 화면입니다. Astryx IDE 템플릿의 패널 프레임을 기존 제어 화면에 맞춰 구성했습니다. Neutral에서 확장한 `engine` 테마를 빌드해 어두운 바탕과 청록 강조색을 적용합니다.
 
