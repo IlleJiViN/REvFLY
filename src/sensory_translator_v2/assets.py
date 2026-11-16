@@ -366,7 +366,7 @@ def resolve_asset_root(asset_root: str | Path | None = None) -> Path:
     if installed.is_dir():
         return installed.resolve()
     raise AssetValidationError(
-        f"No runtime bundle found. Run `sensory-engine-v2 install-assets <release.zip>` "
+        f"No runtime bundle found. Run `revfly install-assets <release.zip>` "
         f"or pass --asset-root (or set {ENV_ASSET_ROOT})."
     )
 

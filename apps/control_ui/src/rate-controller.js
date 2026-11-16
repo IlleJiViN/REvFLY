@@ -24,23 +24,23 @@ export function startRateControl() {
   const finite = (value) => typeof value === "number" && Number.isFinite(value);
   const finiteArray = (value, length) => Array.isArray(value) && value.length === length && value.every(finite);
   const finiteMatrix = (value, rows, cols) => Array.isArray(value) && value.length === rows && value.every((row) => finiteArray(row, cols));
-  const bioLabels = { none: "연속 발화율만", deterministic_isi: "일정한 발화 간격", poisson_refractory: "확률적 발화 · 불응기", direct_lif: "LIF 운동뉴런" };
+  const bioLabels = { none: "Continuous rates only", deterministic_isi: "Fixed spike intervals", poisson_refractory: "Poisson spikes with a refractory period", direct_lif: "LIF motor neurons" };
   const baselineFamily = "kinematic_teacher_scaled";
-  const familyLabels = { [baselineFamily]: "기준 궤적 배율", swing_scaled: "다리 휘두르기", decoupled: "부위별 크기 조절", rhythmic_double_tap: "두 번 두드리기", reach_and_hold: "뻗고 유지하기" };
+  const familyLabels = { [baselineFamily]: "Scale reference trajectory", swing_scaled: "Leg swing", decoupled: "Scale individual axes", rhythmic_double_tap: "Double tap", reach_and_hold: "Reach and hold" };
   const jointLabels = {
-    joint_LFCoxa_yaw: "기절 좌우 회전", joint_LFCoxa_pitch: "기절 앞뒤 회전", joint_LFCoxa_roll: "기절 비틀림",
-    joint_LFTrochanter_yaw: "전절 좌우 회전", joint_LFTrochanter_pitch: "전절 앞뒤 회전", joint_LFTrochanter_roll: "전절 비틀림",
-    joint_LFTibia_pitch: "경절 굽힘",
+    joint_LFCoxa_yaw: "Coxa yaw", joint_LFCoxa_pitch: "Coxa pitch", joint_LFCoxa_roll: "Coxa roll",
+    joint_LFTrochanter_yaw: "Trochanter yaw", joint_LFTrochanter_pitch: "Trochanter pitch", joint_LFTrochanter_roll: "Trochanter roll",
+    joint_LFTibia_pitch: "Tibia pitch",
   };
-  const modeLabels = { fast: "빠른 생성", auto: "필요할 때 보정", refine: "입력 보정 실행", closed_loop: "관절 피드백" };
-  const stageLabels = { queued: "실행을 기다리고 있어요.", running: "작업을 실행하고 있어요.", predicting: "발화율 파형을 만들고 있어요.", fast_verification: "생성한 입력으로 움직임을 검증하고 있어요.", fast_verified: "빠른 생성 결과의 검증을 마쳤어요.", correcting: "입력 파형을 보정하고 있어요.", correction_failed: "빠른 생성 결과를 유지하고 있어요.", final_verification: "선택된 결과를 다시 검증하고 있어요.", rendering: "탑뷰 영상을 만들고 있어요.", completed: "결과를 확인할 수 있어요.", failed: "작업을 완료하지 못했어요." };
+  const modeLabels = { fast: "Fast prediction", auto: "Auto refine", refine: "Refine input", closed_loop: "Joint feedback" };
+  const stageLabels = { queued: "Waiting to run.", running: "Running job.", predicting: "Predicting firing rates.", fast_verification: "Verifying predicted motion in simulation.", fast_verified: "Fast prediction verified.", correcting: "Refining input waveforms.", correction_failed: "Using the fast prediction.", final_verification: "Verifying the selected result.", rendering: "Rendering top-view video.", completed: "Results are ready.", failed: "Job failed." };
 
   function messageOf(value) {
     if (typeof value === "string") return value;
     if (value && typeof value.message === "string") return value.message;
     if (value && typeof value.error === "string") return value.error;
     if (value !== undefined && value !== null) return JSON.stringify(value);
-    return "상세 오류가 제공되지 않았습니다.";
+    return "No error details were provided.";
   }
 
   async function requestJSON(path, options = {}, timeout = 15000) {
@@ -50,7 +50,7 @@ export function startRateControl() {
       const response = await fetch(path, { cache: "no-store", ...options, signal: controller.signal });
       let data;
       try { data = await response.json(); }
-      catch (_) { throw new Error(`서버 응답을 읽지 못했습니다. 연결과 서버 실행 상태를 확인해 주세요. (HTTP ${response.status})`); }
+      catch (_) { throw new Error(`Could not read the response. Check your connection and make sure the server is running. (HTTP ${response.status})`); }
       if (!response.ok) {
         const error = new Error(messageOf(data.error ?? data.message ?? data));
         error.httpStatus = response.status;
@@ -58,8 +58,8 @@ export function startRateControl() {
       }
       return data;
     } catch (error) {
-      if (error.name === "AbortError") throw new Error("서버 응답 시간이 길어졌습니다. 잠시 후 다시 확인해 주세요.");
-      if (error instanceof TypeError) throw new Error("서버에 연결하지 못했습니다. 네트워크와 서버 실행 상태를 확인해 주세요.");
+      if (error.name === "AbortError") throw new Error("The server took too long to respond. Try again shortly.");
+      if (error instanceof TypeError) throw new Error("Could not reach the server. Check your connection and make sure the server is running.");
       throw error;
     } finally { clearTimeout(timer); }
   }
@@ -110,9 +110,9 @@ export function startRateControl() {
     byId("goal-family-field").hidden = !multi || goalFamily.options.length < 2;
     byId("goal-joint-field").hidden = multi && selectedFamily() !== baselineFamily;
     byId("bio-settings").hidden = !multi || bioInput.options.length < 2;
-    byId("scope-description").textContent = multi ? "왼쪽 앞다리 7축 · 근육 15개 · 교사 보조 입력 0개" : "왼쪽 앞다리 경절 1축 · 근육 2개 · 교사 보조 13개";
+    byId("scope-description").textContent = multi ? "Left front leg · 7 axes · 15 muscles · 0 teacher-driven channels" : "Left front tibia · 1 axis · 2 muscles · 13 teacher-driven channels";
     byId("preview-scope").textContent = multi ? "TOP / LEFT FRONT LEG" : "TOP / LF TIBIA";
-    byId("preview-pools").textContent = multi ? "근육 15개" : "근육 2개";
+    byId("preview-pools").textContent = multi ? "15 muscles" : "2 muscles";
     const identity = byId("engine-model");
     const model = multi ? capabilities.model_id : capabilities?.model?.model_id;
     identity.hidden = !model;
@@ -121,11 +121,11 @@ export function startRateControl() {
   function updateControls() {
     ui["control-fields"].disabled = state.busy;
     ui["run-button"].disabled = state.busy || !state.ready || state.loadingGoal || !state.goalReady || !state.goal;
-    (byId("run-button-label") || ui["run-button"].lastElementChild).textContent = state.busy ? "생성 및 검증 중…" : "움직임 생성 및 검증";
+    (byId("run-button-label") || ui["run-button"].lastElementChild).textContent = state.busy ? "Running and verifying…" : "Run and verify";
     const feedback = selectedMode() === "closed_loop";
     const optimization = ["auto", "refine"].includes(selectedMode());
     ui["correction-steps"].disabled = state.busy || !optimization;
-    ui["correction-help"].textContent = feedback ? "시뮬레이션 중 2 ms마다 관절을 보정합니다." : optimization ? "0~20회, 물리 검증을 거쳐 선택합니다." : "빠른 생성에서는 보정하지 않아요.";
+    ui["correction-help"].textContent = feedback ? "Adjusts joint motion every 2 ms in simulation." : optimization ? "Run 0–20 steps and select the result by simulation error." : "Fast prediction skips refinement.";
     feedbackSettings.hidden = !feedback;
     ui["import-target"].disabled = state.busy;
     ui["goal-file"].disabled = state.busy;
@@ -137,11 +137,11 @@ export function startRateControl() {
 
   function checkedTarget(target, times, multi = isMulti()) {
     const valid = multi ? finiteMatrix(target, 211, 7) : finiteArray(target, 211);
-    if (!valid) throw new Error(multi ? "목표 각도는 211개 시점마다 7축 값을 담아야 합니다." : "목표 각도는 유한한 숫자 211개여야 합니다.");
-    if (!target.flat().map(radiansToDegrees).every(Number.isFinite)) throw new Error("목표 각도의 크기와 단위를 확인해 주세요.");
+    if (!valid) throw new Error(multi ? "Enter 211 target samples with seven joint angles per sample." : "Enter 211 finite target angles.");
+    if (!target.flat().map(radiansToDegrees).every(Number.isFinite)) throw new Error("Check the magnitude and units of the target angles.");
     const grid = Array.from({ length: 211 }, (_, i) => i * 0.002);
     if (times !== undefined && (!finiteArray(times, 211) || times.some((t, i) => Math.abs(t - grid[i]) > 1e-9))) {
-      throw new Error("time_s는 0, 0.002, …, 0.420초의 211개 값이어야 합니다.");
+      throw new Error("time_s must contain 211 values from 0 to 0.420 seconds in 0.002-second steps.");
     }
     return { target_rad: target.slice(), time_s: grid };
   }
@@ -159,7 +159,7 @@ export function startRateControl() {
   }
 
   function renderInitialAngle() {
-    ui["initial-angle-info"].textContent = finite(state.initialAngle) ? `물리 시작 각도 ${state.initialAngle.toFixed(2)}°` : "";
+    ui["initial-angle-info"].textContent = finite(state.initialAngle) ? `Initial simulation angle ${state.initialAngle.toFixed(2)}°` : "";
   }
 
   async function loadGoal({ preserveCustom = false } = {}) {
@@ -167,7 +167,7 @@ export function startRateControl() {
     const delta = Number(ui["initial-delta"].value);
     if (!Number.isFinite(scale) || scale < 0.8 || scale > 1.2 || !Number.isFinite(delta) || delta < -5 || delta > 5) {
       state.loadingGoal = false; state.goalReady = false;
-      formError("움직임 크기는 0.8~1.2배, 시작 각도 변화는 −5°~+5°로 입력해 주세요.");
+      formError("Enter a motion scale from 0.8 to 1.2 and an initial angle offset from −5° to +5°.");
       updateControls(); return;
     }
     const version = ++state.goalRequest;
@@ -187,15 +187,15 @@ export function startRateControl() {
       state.initialAngle = multi && Array.isArray(goal.initial_joint_deg) ? goal.initial_joint_deg[6] + delta : goal.initial_tibia_deg;
       if (preserveCustom && state.customGoal && state.goal) { state.goalReady = true; renderInitialAngle(); }
       else {
-        const preview = multi ? ` · ${jointLabel(selectedGoalJoint() || state.multijoint.joint_names[6])} 미리보기` : "";
-        const name = multi ? familyLabels[selectedFamily()] : "기본 동작";
-        setGoal(goal, `${name} ${scale.toFixed(3).replace(/0+$/, "").replace(/\.$/, "")}×${preview} · 211개 시점`, false);
+        const preview = multi ? ` · ${jointLabel(selectedGoalJoint() || state.multijoint.joint_names[6])} preview` : "";
+        const name = multi ? familyLabels[selectedFamily()] : "Default motion";
+        setGoal(goal, `${name} ${scale.toFixed(3).replace(/0+$/, "").replace(/\.$/, "")}×${preview} · 211 samples`, false);
       }
       formError();
     } catch (error) {
       if (version !== state.goalRequest) return;
-      formError(`목표를 불러오지 못했습니다. ${error.message} 연결이 복구되면 프리셋을 다시 선택해 주세요.`);
-      if (!state.goal) ui["preview-placeholder"].textContent = "연결을 확인한 뒤 목표를 다시 불러와 주세요.";
+      formError(`Could not load the target. ${error.message} Select the preset again once the connection is restored.`);
+      if (!state.goal) ui["preview-placeholder"].textContent = "Check the connection and reload the target.";
     } finally {
       if (version === state.goalRequest) { state.loadingGoal = false; updateControls(); }
     }
@@ -203,7 +203,7 @@ export function startRateControl() {
 
   async function bootstrap() {
     ui["retry-connection"].disabled = true;
-    setConnection("loading", "연결 확인 중");
+    setConnection("loading", "Checking connection…");
     try {
       const capabilities = await requestJSON("/api/rate/capabilities");
       state.ready = capabilities.ready === true;
@@ -212,7 +212,7 @@ export function startRateControl() {
       const multiReady = state.multijoint?.ready === true;
       byId("scope-settings").hidden = !multiReady;
       if (multiReady) {
-        setOptions(goalJoint, [["", "7축 모두"], ...state.multijoint.joint_names.map((name) => [name, jointLabel(name)])]);
+        setOptions(goalJoint, [["", "All 7 axes"], ...state.multijoint.joint_names.map((name) => [name, jointLabel(name)])]);
         const families = new Set([baselineFamily, ...(state.multijoint.goal_families || [])]);
         const firstSetup = goalFamily.options.length === 0;
         setOptions(goalFamily, [...families].filter((id) => Object.hasOwn(familyLabels, id)).map((id) => [id, familyLabels[id]]));
@@ -229,15 +229,15 @@ export function startRateControl() {
       if (finite(defaults.threshold_deg)) ui["threshold"].value = defaults.threshold_deg;
       if (finite(defaults.initial_tibia_delta_deg)) ui["initial-delta"].value = defaults.initial_tibia_delta_deg;
       const version = capabilities.schema_version?.startsWith("sensory_translator_v2_") ? " V2" : "";
-      setConnection(state.ready ? "ready" : "error", state.ready ? `엔진${version} 준비됨` : "모델 준비 필요");
+      setConnection(state.ready ? "ready" : "error", state.ready ? `Engine${version} ready` : "Model setup required");
       ui["page-error"].hidden = state.ready;
-      if (!state.ready) showPageError("모델을 준비해야 실행할 수 있어요", "서버에서 저장 모델과 물리 실행 환경을 확인한 뒤 다시 확인해 주세요.");
+      if (!state.ready) showPageError("Set up the model to run jobs", "Check the model files and simulation setup on the server, then reconnect.");
       await loadGoal();
       restorePendingJob();
     } catch (error) {
       state.ready = false;
-      setConnection("error", "서버 연결 확인 필요");
-      showPageError("컨트롤러에 연결하지 못했어요", error.message);
+      setConnection("error", "Connection unavailable");
+      showPageError("Could not connect to the controller", error.message);
     } finally { ui["retry-connection"].disabled = false; updateControls(); }
   }
 
@@ -254,25 +254,25 @@ export function startRateControl() {
   async function importGoal(file) {
     if (!file || state.busy) return;
     try {
-      if (file.size > 1024 * 1024) throw new Error("목표 JSON은 1MB 이하로 저장해 주세요.");
+      if (file.size > 1024 * 1024) throw new Error("The target JSON must be 1 MB or smaller.");
       let data;
       try { data = JSON.parse(await file.text()); }
-      catch (_) { throw new Error("JSON 형식을 확인해 주세요. target_rad 또는 target_deg 배열이 필요합니다."); }
-      if (!data || Array.isArray(data) || typeof data !== "object") throw new Error("각도 단위를 알 수 있도록 target_rad 또는 target_deg 필드가 있는 JSON을 사용해 주세요.");
+      catch (_) { throw new Error("Check that the JSON contains a target_rad or target_deg array."); }
+      if (!data || Array.isArray(data) || typeof data !== "object") throw new Error("Use a JSON object with target_rad or target_deg to specify the angle units.");
       let radians = data.target_rad ?? data.target_tibia_rad;
       const toRad = (value) => value * Math.PI / 180;
       if (radians === undefined && isMulti() && finiteMatrix(data.target_deg, 211, 7)) radians = data.target_deg.map((row) => row.map(toRad));
       if (radians === undefined && finiteArray(data.target_deg, 211)) radians = data.target_deg.map(toRad);
       if (isMulti() && data.joint_names !== undefined && JSON.stringify(data.joint_names) !== JSON.stringify(state.multijoint.joint_names)) {
-        throw new Error("목표 JSON의 7축 순서를 내보낸 예시와 맞춰 주세요.");
+        throw new Error("Match the seven joint axes in the exported example.");
       }
       const goal = checkedTarget(radians, data.time_s);
       ++state.goalRequest;
       clearTimeout(goalDebounce);
       state.loadingGoal = false;
-      setGoal(goal, `사용자 목표 · ${file.name}`, true);
+      setGoal(goal, `Custom target · ${file.name}`, true);
       formError();
-      announce("사용자 목표 211개 시점을 불러왔습니다.");
+      announce("Loaded 211 custom target samples.");
     } catch (error) { formError(error.message); }
     finally { ui["goal-file"].value = ""; }
   }
@@ -310,8 +310,8 @@ export function startRateControl() {
     const aliases = { queued: -1, running: 0, fast_verified: 1, correction_failed: 2, final_verification: 3, rendering: 3 };
     const index = Object.hasOwn(aliases, stage) ? aliases[stage] : labels.indexOf(stage);
     ui["job-panel"].dataset.status = status;
-    ui["job-title"].textContent = stageLabels[stage] || stageLabels[status] || "작업을 실행하고 있어요.";
-    ui["job-detail"].textContent = detail || (status === "queued" ? "앞선 작업이 끝나면 순서대로 실행합니다." : "검증된 물리 결과를 기다리고 있습니다.");
+    ui["job-title"].textContent = stageLabels[stage] || stageLabels[status] || "Running job.";
+    ui["job-detail"].textContent = detail || (status === "queued" ? "This job will run after the jobs ahead of it." : "Waiting for simulation results.");
     ui["job-steps"].querySelectorAll("li").forEach((item, i) => {
       item.classList.toggle("is-current", status !== "completed" && i === index);
       item.classList.toggle("is-done", status === "completed" || i < index);
@@ -329,10 +329,10 @@ export function startRateControl() {
   function progressDetail(progress) {
     if (!progress || typeof progress !== "object") return "";
     const parts = [];
-    if (Number.isInteger(progress.iteration)) parts.push(`보정 평가 ${progress.iteration}${Number.isInteger(progress.steps) ? ` / ${progress.steps}` : ""}`);
-    else if (Number.isInteger(progress.step) && progress.step > 0) parts.push(`보정 단계 ${progress.step}`);
-    if (finite(progress.joint_rmse_deg)) parts.push(`현재 오차 ${progress.joint_rmse_deg.toFixed(3)}°`);
-    if (finite(progress.best_joint_rmse_deg)) parts.push(`최선 ${progress.best_joint_rmse_deg.toFixed(3)}°`);
+    if (Number.isInteger(progress.iteration)) parts.push(`Refinement evaluation ${progress.iteration}${Number.isInteger(progress.steps) ? ` / ${progress.steps}` : ""}`);
+    else if (Number.isInteger(progress.step) && progress.step > 0) parts.push(`Refinement step ${progress.step}`);
+    if (finite(progress.joint_rmse_deg)) parts.push(`Current error ${progress.joint_rmse_deg.toFixed(3)}°`);
+    if (finite(progress.best_joint_rmse_deg)) parts.push(`Best ${progress.best_joint_rmse_deg.toFixed(3)}°`);
     if (parts.length) return parts.join(" · ");
     return typeof progress.message === "string" ? progress.message : "";
   }
@@ -345,9 +345,9 @@ export function startRateControl() {
     const mode = selectedMode();
     const steps = ["fast", "closed_loop"].includes(mode) ? 0 : Number(ui["correction-steps"].value);
     const delta = Number(ui["initial-delta"].value);
-    if (!Number.isFinite(threshold) || threshold <= 0) return formError("오차 기준에 0보다 큰 각도 값을 입력해 주세요.");
-    if (!Number.isInteger(steps) || steps < 0 || steps > 20) return formError("보정 횟수는 0~20 사이의 정수로 입력해 주세요.");
-    if (!Number.isFinite(delta) || delta < -5 || delta > 5) return formError("시작 각도 변화는 −5°~+5° 사이로 입력해 주세요.");
+    if (!Number.isFinite(threshold) || threshold <= 0) return formError("Enter a joint error threshold greater than 0°.");
+    if (!Number.isInteger(steps) || steps < 0 || steps > 20) return formError("Enter a whole number from 0 to 20 for refinement steps.");
+    if (!Number.isFinite(delta) || delta < -5 || delta > 5) return formError("Enter an initial angle offset from −5° to +5°.");
     const request = { target_rad: state.goal.target_rad, mode, threshold_deg: threshold, correction_steps: steps, render: ui["render-video"].checked };
     if (isMulti()) {
       request.scope = "lf15";
@@ -357,7 +357,7 @@ export function startRateControl() {
     } else request.initial_tibia_delta_deg = delta;
     if (mode === "closed_loop") {
       const gains = [feedbackKp, feedbackKd].map((input) => input.valueAsNumber);
-      if (gains.some((value) => !finite(value) || value < 0)) return formError("Kp와 Kd에 0 이상인 숫자를 입력해 주세요.");
+      if (gains.some((value) => !finite(value) || value < 0)) return formError("Enter values of 0 or greater for Kp and Kd.");
       [request.feedback_kp, request.feedback_kd] = gains;
     }
     state.request = request;
@@ -365,19 +365,19 @@ export function startRateControl() {
     ui["results"].hidden = true; ui["empty-results"].hidden = true;
     ui["result-video"].pause(); ui["retry-job"].hidden = true;
     ui["job-panel"].hidden = false; ui["job-id"].textContent = "";
-    setStage("queued", "queued", "요청을 등록하고 있습니다.");
+    setStage("queued", "queued", "Submitting job.");
     setBusy(true);
     try {
       const job = await requestJSON("/api/rate/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(state.request) }, 20000);
-      if (typeof job.job_id !== "string" || !/^[a-zA-Z0-9_-]{1,128}$/.test(job.job_id)) throw new Error("서버가 유효한 작업 ID를 반환하지 않았습니다.");
+      if (typeof job.job_id !== "string" || !/^[a-zA-Z0-9_-]{1,128}$/.test(job.job_id)) throw new Error("The server returned an invalid job ID.");
       state.jobId = job.job_id;
-      ui["job-id"].textContent = `작업 ${state.jobId}`;
+      ui["job-id"].textContent = `Job ${state.jobId}`;
       savePendingJob();
       setStage("queued", "queued");
       pollJob();
     } catch (error) {
       setBusy(false);
-      setStage("failed", "failed", `실행 요청을 등록하지 못했습니다. ${error.message}`);
+      setStage("failed", "failed", `Could not submit the job. ${error.message}`);
       formError(error.message);
     }
   }
@@ -388,29 +388,29 @@ export function startRateControl() {
     try {
       const job = await requestJSON(`/api/rate/jobs/${encodeURIComponent(state.jobId)}`);
       if (job.status === "completed") {
-        if (!job.result || typeof job.result !== "object") throw new Error("완료된 작업의 결과 데이터가 없습니다. 서버의 작업 기록을 확인해 주세요.");
+        if (!job.result || typeof job.result !== "object") throw new Error("The completed job has no result data. Check the job history on the server.");
         renderResult(job.result);
-        setStage("completed", "completed", "선택된 입력의 물리 검증과 결과 저장을 마쳤습니다.");
+        setStage("completed", "completed", "The selected input passed simulation verification and the results were saved.");
         setBusy(false); clearPendingJob();
       } else if (job.status === "failed") {
         setStage("failed", "failed", messageOf(job.error));
         setBusy(false); clearPendingJob();
         ui["empty-results"].hidden = false;
-        announce(`작업 실패. ${messageOf(job.error)}`);
+        announce(`Job failed. ${messageOf(job.error)}`);
       } else if (job.status === "queued" || job.status === "running") {
         const stage = progressStage(job.progress, job.status);
         const displayStage = stage === "nominal_prediction" ? "predicting" : stage === "evaluating" ? "fast_verification" : stage;
         setStage(displayStage, job.status, progressDetail(job.progress));
         state.pollTimer = setTimeout(pollJob, 1100);
-      } else throw new Error("작업 상태를 해석하지 못했습니다. 작업 기록을 다시 조회해 주세요.");
+      } else throw new Error("Could not read the job status. Check the job history again.");
     } catch (error) {
       if (error.httpStatus === 404) {
         setBusy(false); clearPendingJob();
-        setStage("failed", "failed", "이 작업을 찾을 수 없습니다. 서버가 재시작되었다면 새로 실행해 주세요.");
+        setStage("failed", "failed", "Could not find this job. Start a new run if the server restarted.");
       } else {
-        ui["job-detail"].textContent = `상태 조회가 중단됐습니다. 작업은 서버에서 계속 실행될 수 있어요. ${error.message}`;
+        ui["job-detail"].textContent = `Status checks stopped. The job may still be running on the server. ${error.message}`;
         ui["retry-job"].hidden = false;
-        announce("작업 상태를 다시 조회해 주세요.");
+        announce("Check the job status again.");
       }
     } finally { state.pollInFlight = false; }
   }
@@ -443,10 +443,10 @@ export function startRateControl() {
       ui["render-video"].checked = request.render === true;
       if (Number.isFinite(Number(saved.scale))) { ui["goal-scale"].value = saved.scale; ui["goal-scale-number"].value = saved.scale; }
       if (finite(saved.initialAngle)) state.initialAngle = saved.initialAngle;
-      setGoal(goal, saved.source || "복원한 실행 목표", saved.customGoal === true);
+      setGoal(goal, saved.source || "Restored target", saved.customGoal === true);
       ui["job-panel"].hidden = false; ui["empty-results"].hidden = true;
-      ui["job-id"].textContent = `작업 ${state.jobId}`;
-      setStage("running", "running", "이전에 실행한 작업의 상태를 불러옵니다.");
+      ui["job-id"].textContent = `Job ${state.jobId}`;
+      setStage("running", "running", "Restoring the previous job status.");
       setBusy(true); pollJob();
     } catch (_) { clearPendingJob(); }
   }
@@ -460,8 +460,8 @@ export function startRateControl() {
 
   function validatedTrace(trace, multi) {
     const jointSeries = (values) => multi ? finiteMatrix(values, 211, 7) : finiteArray(values, 211);
-    if (!trace || !finiteArray(trace.time_ms, 211) || !jointSeries(trace.target_deg) || !jointSeries(trace.actual_deg)) throw new Error("결과의 관절 궤적 211개를 확인하지 못했습니다.");
-    if (!finiteArray(trace.rate_time_ms, 420) || !finiteMatrix(trace.rates_hz, 420, multi ? 15 : 2)) throw new Error("결과의 발화율 파형을 확인하지 못했습니다.");
+    if (!trace || !finiteArray(trace.time_ms, 211) || !jointSeries(trace.target_deg) || !jointSeries(trace.actual_deg)) throw new Error("The joint trajectories must contain 211 valid samples.");
+    if (!finiteArray(trace.rate_time_ms, 420) || !finiteMatrix(trace.rates_hz, 420, multi ? 15 : 2)) throw new Error("The result contains invalid firing-rate waveforms.");
     return trace;
   }
 
@@ -495,14 +495,14 @@ export function startRateControl() {
       resultMuscle.value = String(Math.max(0, muscles.indexOf("LFTibia_flex_93434")));
     }
     ui["results"].hidden = false;
-    ui["results-title"].textContent = "검증 결과";
-    const scope = multi ? "왼쪽 앞다리 7축 · 근육 15개" : "왼쪽 앞다리 경절";
-    ui["result-context"].textContent = [modeLabels[state.request?.mode] || "움직임 생성", scope, result.model_id, `작업 ${state.jobId.slice(0, 12)}`].filter(Boolean).join(" · ");
+    ui["results-title"].textContent = "Verification results";
+    const scope = multi ? "Left front leg · 7 axes · 15 muscles" : "Left front tibia";
+    ui["result-context"].textContent = [modeLabels[state.request?.mode] || "Motion generation", scope, result.model_id, `Job ${state.jobId.slice(0, 12)}`].filter(Boolean).join(" · ");
     byId("fast-metric").hidden = feedback && !multi;
-    byId("result-explanation").textContent = multi ? "전체 RMSE는 211개 시점 × 7축의 관절각 오차입니다." : "RMSE는 211개 시점의 관절각 오차입니다.";
-    byId("rate-chart-title").textContent = feedback ? "모델의 발화율 명령" : "생성한 연속 발화율";
+    byId("result-explanation").textContent = multi ? "Overall RMSE measures joint angle error across 211 samples and 7 axes." : "RMSE measures joint angle error over 211 samples.";
+    byId("rate-chart-title").textContent = feedback ? "Model firing-rate commands" : "Predicted firing rates";
     byId("rate-chart-detail").hidden = !feedback;
-    byId("rate-chart-detail").textContent = feedback ? "관절 피드백은 근육 입력에 적용돼요." : "";
+    byId("rate-chart-detail").textContent = feedback ? "Joint feedback acts on the muscle inputs." : "";
     ui["fast-rmse"].textContent = angleText(result.fast?.joint_rmse_deg);
     ui["selected-rmse"].textContent = angleText(result.joint_rmse_deg);
     const maximum = multi ? Math.max(...state.trace.target_deg.flatMap((row, i) => row.map((value, j) => Math.abs(value - state.trace.actual_deg[i][j])))) : result.max_abs_joint_error_deg;
@@ -511,26 +511,26 @@ export function startRateControl() {
     const maxChange = result.max_abs_joint_error_deg - fastMax;
     ui["max-error-caption"].classList.toggle("is-worse", finite(maxChange) && maxChange > 1e-6);
     ui["max-error-caption"].textContent = finite(fastMax) && finite(result.max_abs_joint_error_deg)
-      ? `빠른 생성 ${fastMax.toFixed(3)}° · ${Math.abs(maxChange) < 1e-6 ? "변화 없음" : `${Math.abs(maxChange).toFixed(3)}° ${maxChange > 0 ? "증가" : "감소"}`}`
-      : "가장 많이 벗어난 시점";
-    ui["max-error"].title = finite(fastMax) ? `빠른 생성 ${angleText(fastMax)} → 선택 결과 ${angleText(result.max_abs_joint_error_deg)}` : "선택된 입력의 최대 절대오차";
-    ui["criterion-badge"].textContent = result.criterion_met === true ? "오차 기준 충족" : "오차 기준 미달";
+      ? `Fast prediction ${fastMax.toFixed(3)}° · ${Math.abs(maxChange) < 1e-6 ? "No change" : `${Math.abs(maxChange).toFixed(3)}° ${maxChange > 0 ? "increase" : "decrease"}`}`
+      : "Largest deviation from the target";
+    ui["max-error"].title = finite(fastMax) ? `Fast prediction ${angleText(fastMax)} → Selected result ${angleText(result.max_abs_joint_error_deg)}` : "Max absolute error for the selected input";
+    ui["criterion-badge"].textContent = result.criterion_met === true ? "Within threshold" : "Above threshold";
     ui["criterion-badge"].setAttribute("aria-label", ui["criterion-badge"].textContent);
     ui["criterion-badge"].dataset.met = String(result.criterion_met === true);
     const threshold = state.request?.threshold_deg;
-    ui["threshold-caption"].textContent = finite(threshold) ? `요청 기준 ≤ ${threshold.toFixed(3)}°` : "낮을수록 목표에 가깝습니다.";
-    ui["selected-stage"].textContent = feedback ? "관절 피드백 적용" : result.selected_stage === "correction" ? "보정된 입력" : "빠른 생성 입력";
+    ui["threshold-caption"].textContent = finite(threshold) ? `Target threshold ≤ ${threshold.toFixed(3)}°` : "Lower is closer to the target.";
+    ui["selected-stage"].textContent = feedback ? "Joint feedback applied" : result.selected_stage === "correction" ? "Refined input" : "Fast prediction input";
     const correction = result.correction || {};
     const updates = correction.actual_optimizer_updates;
-    ui["correction-caption"].textContent = feedback ? `Kp ${result.feedback?.kp ?? state.request.feedback_kp} · Kd ${result.feedback?.kd ?? state.request.feedback_kd}` : correction.status === "failed" ? "보정 실패 · 빠른 결과 유지" : correction.status === "stopped" ? `기울기 검증에서 중단 · 갱신 ${updates}회` : correction.status === "skipped" ? "추가 보정 없음" : Number.isInteger(updates) ? `실제 보정 갱신 ${updates}회` : "물리 오차로 입력 선택";
+    ui["correction-caption"].textContent = feedback ? `Kp ${result.feedback?.kp ?? state.request.feedback_kp} · Kd ${result.feedback?.kd ?? state.request.feedback_kd}` : correction.status === "failed" ? "Refinement failed · using fast prediction" : correction.status === "stopped" ? `Stopped at gradient verification · ${updates} updates` : correction.status === "skipped" ? "No refinement" : Number.isInteger(updates) ? `Refinement applied ${updates} updates` : "Input selected by simulation error";
     ui["correction-warning"].hidden = correction.status !== "failed";
-    ui["correction-warning-text"].textContent = `추가 보정을 완료하지 못해, 물리 검증을 마친 빠른 생성 결과를 유지했습니다.${Number.isInteger(updates) ? ` 실제 보정 갱신은 ${updates}회입니다.` : ""}`;
+    ui["correction-warning-text"].textContent = `Refinement failed. The verified fast prediction was kept.${Number.isInteger(updates) ? ` Refinement applied ${updates} updates.` : ""}`;
     ui["correction-error"].textContent = messageOf(correction.error);
     ui["result-notice"].hidden = true;
     const bioResult = byId("bio-result");
     const bio = result.bio_interface;
     bioResult.hidden = !finite(bio?.overall_rmse_deg);
-    bioResult.textContent = bioResult.hidden ? "" : `${bioLabels[state.request.bio_mode] || "스파이크"} 별도 재생 · 7축 RMSE ${angleText(bio.overall_rmse_deg)}`;
+    bioResult.textContent = bioResult.hidden ? "" : `${bioLabels[state.request.bio_mode] || "Spike"} replay · RMSE across 7 axes ${angleText(bio.overall_rmse_deg)}`;
     // VP9/WebM avoids black H264 frames on some embedded Linux browsers.
     // Older results keep their original MP4 and are not rewritten.
     const videoURL = fileURL(result.artifacts?.video_webm || result.artifacts?.video);
@@ -545,19 +545,19 @@ export function startRateControl() {
     } else {
       ui["result-video"].removeAttribute("poster");
       ui["result-video"].removeAttribute("src"); ui["result-video"].load();
-      ui["video-placeholder"].textContent = state.request?.render ? "이 결과에 탑뷰 영상이 제공되지 않았습니다. 아래 파일과 수치 결과를 확인해 주세요." : "영상 생성을 선택하지 않았습니다. 그래프에서 시점을 이동할 수 있어요.";
+      ui["video-placeholder"].textContent = state.request?.render ? "A top-view video is unavailable. See the result files and metrics below." : "Video rendering was off. Use the timeline to inspect the charts.";
     }
     const protocolURL = fileURL(result.artifacts?.protocol_json);
     ui["protocol-link"].hidden = !protocolURL;
     if (protocolURL) {
       ui["protocol-link"].href = protocolURL;
-      ui["protocol-link"].firstElementChild.textContent = multi ? "실행 기록 JSON" : "프로토콜 JSON";
+      ui["protocol-link"].firstElementChild.textContent = multi ? "Run record JSON" : "Protocol JSON";
     }
     ui["bundle-download"].href = `/api/rate/jobs/${encodeURIComponent(state.jobId)}/download`;
     ui["bundle-download"].hidden = false;
     ui["time-cursor"].value = "0";
     drawResults(); updateCursorReadout();
-    announce(`검증 완료. 선택 결과 오차 ${angleText(result.joint_rmse_deg)}. ${ui["criterion-badge"].textContent}.`);
+    announce(`Verification complete. Selected result error ${angleText(result.joint_rmse_deg)}. ${ui["criterion-badge"].textContent}.`);
     requestAnimationFrame(() => {
       drawResults();
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) ui["results"].scrollIntoView({ behavior: "smooth", block: "start" });
@@ -578,8 +578,8 @@ export function startRateControl() {
     const target = state.multiResult ? trace.target_deg[index][joint] : trace.target_deg[index];
     const actual = state.multiResult ? trace.actual_deg[index][joint] : trace.actual_deg[index];
     const rates = trace.rates_hz[rateIndex];
-    const rateText = state.multiResult ? `선택 근육 ${rates[Number(resultMuscle.value)].toFixed(1)}Hz` : `굴근 ${rates[0].toFixed(1)}Hz · 신근 ${rates[1].toFixed(1)}Hz`;
-    ui["cursor-readout"].textContent = `목표 ${target.toFixed(2)}° · 실제 ${actual.toFixed(2)}° · ${rateText}`;
+    const rateText = state.multiResult ? `Selected muscle ${rates[Number(resultMuscle.value)].toFixed(1)}Hz` : `Flexor ${rates[0].toFixed(1)}Hz · Extensor ${rates[1].toFixed(1)}Hz`;
+    ui["cursor-readout"].textContent = `Target ${target.toFixed(2)}° · Actual ${actual.toFixed(2)}° · ${rateText}`;
   }
   function setCursor(value, fromVideo = false) {
     state.cursor = clamp(value, 0, 420);
@@ -676,7 +676,7 @@ export function startRateControl() {
     ui["empty-results"].hidden = false;
     ui["result-video"].pause();
     ui["preview-placeholder"].hidden = false;
-    ui["preview-placeholder"].textContent = "목표 궤적을 불러오는 중입니다.";
+    ui["preview-placeholder"].textContent = "Loading target trajectory…";
     scheduleGoal();
   });
   goalFamily.addEventListener("change", () => { scopeSettings(); state.customGoal = false; scheduleGoal(); });
@@ -696,7 +696,7 @@ export function startRateControl() {
   });
   ui["result-video"].addEventListener("error", () => {
     if (!ui["result-video"].getAttribute("src")) return;
-    ui["result-notice"].textContent = "영상 파일을 재생하지 못했습니다. 결과 묶음을 내려받아 확인하거나 새 작업에서 영상을 다시 생성해 주세요.";
+    ui["result-notice"].textContent = "Could not play the video. Download the results or render a new video.";
     ui["result-notice"].hidden = false;
   });
   let resizeFrame;

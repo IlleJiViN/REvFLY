@@ -26,6 +26,7 @@ dev = [
 ]
 
 [project.scripts]
+revfly = "sensory_translator_v2.engine.cli:main"
 sensory-engine-v2 = "sensory_translator_v2.engine.cli:main"
 
 [tool.setuptools]

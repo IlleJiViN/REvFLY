@@ -1,35 +1,35 @@
-# 학습에 없던 동작 계열에서 V2 역제어 검증
+# V2 inverse control on unseen motion families
 
-고정된 V2 모델이 새로운 관절 궤적에서도 물리 탐색에 유용한 시작값을 주는지 확인했다. 왼쪽 앞다리 7축을 대상으로 학습 및 모델 선택에 사용하지 않은 동작 계열 3개에서 합성 목표 9개를 만들었다. 목표 하나에 각 초기화 방식이 쓸 수 있는 탐색 시간은 최대 30초다.
+We tested whether a frozen V2 model provides a useful starting point for physics-based search on new joint trajectories. We generated 9 synthetic targets for the 7 left-foreleg joint axes, with 3 motion families held out from both training and model selection. Each initialization method had up to 30 seconds of search time per target.
 
-## 결과
+## Results
 
-| 실험 | 시작값 | 초기 평균 RMSE | 최종 평균 RMSE | 최악 목표 RMSE | 기준 미달 |
+| Experiment | Initialization | Initial mean RMSE | Final mean RMSE | Worst target RMSE | Above threshold |
 |---|---|---:|---:|---:|---:|
-| 사전 계획 · 기울기 검사 L-BFGS | 공통 파형 | 23.347° | 23.347° | 30.503° | 9/9 |
-| 사전 계획 · 기울기 검사 L-BFGS | V2 예측 | 12.541° | 9.353° | 24.377° | 9/9 |
-| 보조 실험 · 순방향 물리 탐색 | 공통 파형 | 23.347° | 10.412° | 13.634° | 9/9 |
-| 보조 실험 · 순방향 물리 탐색 | V2 예측 | 12.541° | 6.056° | 9.530° | 3/9 |
+| Planned L-BFGS with gradient checks | Shared waveform | 23.347° | 23.347° | 30.503° | 9/9 |
+| Planned L-BFGS with gradient checks | V2 prediction | 12.541° | 9.353° | 24.377° | 9/9 |
+| Follow-up forward physics search | Shared waveform | 23.347° | 10.412° | 13.634° | 9/9 |
+| Follow-up forward physics search | V2 prediction | 12.541° | 6.056° | 9.530° | 3/9 |
 
-**사전 계획한 실험에서는 두 방식 모두 5.730° 기준을 충족한 목표가 없었다.** 탐색 예산 안에 완료된 기울기 평가 26건 중 15건이 유한차분 방향 검사를 통과하지 못했고, 공통 파형 9건 전부와 V2 예측 6건이 이 검사에서 종료됐다. 최종 오차 개선으로 이어진 업데이트는 공통 파형 0회, V2 예측 11회였다.
+**In the planned experiment, zero targets met the 5.730° threshold with either method.** Of the 26 gradient evaluations completed within the budget, 15 failed the finite-difference direction check. The check stopped all 9 shared-waveform trials and 6 V2 trials. Updates that improved the final error numbered 0 for the shared waveform and 11 for V2 predictions.
 
-**기울기 검사 실패 이후 추가한 보조 실험에서는 V2 초기화가 9개 목표 전부에서 최종 오차를 줄였다.** 최종 평균 RMSE가 10.412°에서 6.056°로 약 42% 줄었고, 6개가 기준을 통과했다. 공통 파형과 V2 예측의 탐색 시간 중앙값은 각각 29.788초와 29.822초였다. 이 수치는 같은 시간에 얻은 정확도를 비교한다.
+**In the follow-up experiment, V2 initialization reduced the final error on all 9 targets.** The final mean RMSE fell by about 42%, from 10.412° to 6.056°, and 6 targets met the threshold. Median search times were 29.788 seconds for the shared waveform and 29.822 seconds for V2 predictions. The two methods therefore used nearly the same time.
 
-![탐색 시간에 따른 9개 목표의 최선 평균 오차와 보조 실험의 관절축별 최악 RMSE](comparison.png)
+![Best mean error over search time for 9 targets and worst RMSE by joint axis in the follow-up experiment](comparison.png)
 
-왼쪽 그래프는 각 시점에 완료된 후보 중 가장 좋은 오차를 목표별로 골라 평균한다. 9개 목표의 첫 평가가 모두 완료된 시점부터 그렸다. 수평 점선은 개별 목표의 통과 기준을 나타낸다.
+At each time point, the left plot averages the lowest error from the candidates completed so far for each target. The plot begins after all 9 targets have completed their first evaluation. The horizontal dashed line marks the threshold for an individual target.
 
-### 보조 실험의 동작 계열별 결과
+### Follow-up results by motion family
 
-| 계열 | 공통 파형 최종 평균 RMSE | V2 예측 최종 평균 RMSE | 기준 미달 · 공통 / V2 |
+| Family | Shared waveform final mean RMSE | V2 prediction final mean RMSE | Above threshold, shared / V2 |
 |---|---:|---:|---:|
-| 순차 근육군 펄스 | 9.768° | 6.508° | 3/3 / 1/3 |
-| 주파수가 변하는 길항근 교대 구동 | 12.524° | 6.436° | 3/3 / 2/3 |
-| 동시 수축 후 이완 | 8.943° | 5.224° | 3/3 / 0/3 |
+| Sequential muscle group pulses | 9.768° | 6.508° | 3/3 / 1/3 |
+| Alternating antagonist activation with varying frequency | 12.524° | 6.436° | 3/3 / 2/3 |
+| Coactivation followed by release | 8.943° | 5.224° | 3/3 / 0/3 |
 
-### 보조 실험의 관절축별 최악 오차
+### Worst joint-axis error in the follow-up experiment
 
-| 왼쪽 앞다리 관절축 | 공통 파형 최대 RMSE | V2 예측 최대 RMSE | 공통 파형 최대 절대오차 | V2 예측 최대 절대오차 |
+| Left foreleg joint axis | Shared waveform max RMSE | V2 prediction max RMSE | Shared waveform max absolute error | V2 prediction max absolute error |
 |---|---:|---:|---:|---:|
 | Coxa yaw | 14.855° | 6.452° | 28.098° | 16.724° |
 | Coxa pitch | 15.125° | 10.127° | 40.775° | 26.597° |
@@ -39,29 +39,29 @@
 | Trochanter roll | 16.415° | 11.334° | 45.668° | 27.026° |
 | Tibia pitch | 14.436° | 9.509° | 40.686° | 23.073° |
 
-## 어떤 목표를 테스트했나
+## Test targets
 
-- 모델 `20261116_v2_multijoint15_resnorm`과 `adjacent_static_parent_v1` MuJoCo 물리를 고정했다. 모델 선택은 학습 중 24번째 epoch에서 끝났다. 시험 목표로 모델을 다시 학습하거나 선택하지 않았다.
-- 기존 데이터는 학습 20개, 모델 선택 10개였다. 각 분할에는 `swing_scaled`, `decoupled_group_swing`, `rhythmic_double_tap`, `reach_and_hold` 네 계열이 포함됐다.
-- 새 목표는 세 근육군의 펄스가 차례로 나타나는 `sequential_group_pulses`, 주파수가 달라지는 길항근 교대 구동 `chirped_antagonists`, 동시 수축 후 이완하는 `coactivation_release` 계열별 3개다. 생성기는 교사 구동의 시간 평균을 기본값으로 쓰고 새 시간 패턴을 합성했다. 각 목표와 가장 가까운 기존 궤적의 거리는 학습 10.72–22.86°, 모델 선택 14.66–25.57°였다. 이 거리는 목표 궤적끼리의 RMSE다.
-- 같은 시뮬레이터에 합성 구동을 넣어 목표 관절 궤적을 생성했다. 9개 모두 생성에 쓰인 구동을 독립적으로 재생해 목표값과 비트 단위로 일치함을 확인했다. 최적화에는 생성 입력을 숨기고 목표 관절각과 초기 자세만 전달했다. 두 실험에서 선택된 합계 36개 구동도 독립 재생으로 검증했다.
-- 각 목표는 420 ms 구간의 2 ms 간격 관절 위치 211개 × 7축이다. 제어 변수는 15개 근육 풀마다 연속 발화율 매듭 105개이며, 허용 범위는 0–200 Hz다. 100 Hz 스케일과 2 ms 시간상수의 변환을 거쳐 210 × 15 근육 구동 배열을 물리에 입력했다. 교사 구동을 재생에 섞지 않았다.
+- We froze the `20261116_v2_multijoint15_resnorm` checkpoint and the `adjacent_static_parent_v1` MuJoCo physics configuration. Model selection ended at epoch 24. The test targets were held out from training and model selection.
+- The original data included 20 training trajectories and 10 model-selection trajectories. Each split contained four families, `swing_scaled`, `decoupled_group_swing`, `rhythmic_double_tap`, and `reach_and_hold`.
+- We generated 3 targets from each new family. In `sequential_group_pulses`, pulses activate three muscle groups in sequence. In `chirped_antagonists`, antagonist activation alternates at varying frequencies. In `coactivation_release`, muscles activate together and then relax. The generator used the time-averaged teacher controls as a baseline and synthesized new temporal patterns. The RMSE from each test target to its nearest reference trajectory ranged from 10.72–22.86° for training and 14.66–25.57° for model selection.
+- The simulator generated target joint trajectories from synthetic controls. Independent replay of the generating controls reproduced all 9 targets bit for bit. Optimization received only the target joint angles and the initial pose. We also independently replayed and verified all 36 sets of controls selected in the two experiments.
+- Each target has 211 joint positions sampled at 2 ms intervals over 420 ms, across 7 joint axes. The optimizer controls 105 continuous firing-rate knots per muscle pool across 15 pools, with bounds of 0–200 Hz. The rate-to-control conversion uses a 100 Hz scale and a 2 ms time constant, producing a 210 × 15 muscle control array. The simulator replayed the generated muscle controls directly.
 
-## 무엇을 비교했나
+## Comparison protocol
 
-`direct`는 모델 패키지에 든 목표 비의존 공통 파형 `base_knots_hz`에서 시작한다. `model`은 고정된 V2 모델에 목표를 넣어 얻은 발화율 파형에서 시작한다. 두 방식은 초기화 이후 같은 탐색 알고리즘, 발화율 제약, 난수 시드, 물리 설정을 사용한다. 각 목표에서 같은 CPU로 두 방식을 순차 실행하고, 목표별로 실행 순서를 교대했다. 30초는 초기화, 후보 물리 평가와 선택을 포함한 경과 시간이다. 공통 워밍업과 결과 확인용 독립 재생은 따로 기록했다. 마감 뒤 완료된 후보는 결과에 반영하지 않았다.
+`direct` starts from the target-independent waveform `base_knots_hz` in the model package. `model` starts from the firing-rate waveform predicted by the frozen V2 model for the given target. After initialization, both use the same search algorithm, firing-rate bounds, random seed, and physics settings. For each target, the methods run sequentially on the same CPU, with the order alternating across targets. The 30-second wall-clock budget includes initialization, physics evaluation of candidates, and candidate selection. The logs record shared warm-up and independent verification replay outside the search budget. Results include candidates that completed within the deadline.
 
-사전 계획한 방식은 발화율 제약을 적용한 L-BFGS다. 물리에서 구한 기울기의 방향을 유한차분으로 검사한 뒤 갱신했다. 첫 스텝의 발화율 RMS 크기는 1 Hz, 상한은 12 Hz, 이력 길이는 5다. 방향 검사를 통과하지 못하면 해당 시행을 종료했다.
+The planned experiment used L-BFGS with firing-rate constraints. Each update required a finite-difference direction check on the physics gradient. The algorithm used an initial 1 Hz RMS step, a maximum 12 Hz RMS step, and an L-BFGS history of 5. A failed direction check ended the trial.
 
-보조 실험에서는 두 초기화 방식에 같은 순방향 패턴 탐색을 적용했다. 시간축 코사인 기저 세 가지와 근육축 방향 19개를 조합한 57개 방향으로 발화율을 바꾸고, 물리 재생 오차가 줄어든 후보를 채택했다. 6 Hz 스텝에서 시작해 한 바퀴에 개선이 없을 때 절반으로 줄였다. 최소 스텝은 0.375 Hz다.
+The follow-up experiment used the same forward pattern search for both initializations. The search varied firing rates along 57 directions that combine three temporal cosine bases and 19 directions in muscle space. It accepted candidates that reduced the physics replay error. The search began with a 6 Hz step and halved it after every full pass without improvement. The minimum step was 0.375 Hz.
 
-- **목표별 RMSE**는 211개 시간 샘플과 7개 축의 재생각−목표각 차이를 제곱해 평균한 뒤 제곱근을 도 단위로 환산한 값이다. **최종 평균 RMSE**는 목표별 최종 RMSE의 산술평균이다.
-- **기준 미달**은 목표별 최종 RMSE가 0.1 rad(약 5.730°)를 넘는 경우다. 이 기준은 관절 개별 한계와 별개다.
-- **관절축별 최대 RMSE**는 한 축에서 계산한 시간 RMSE 중 가장 큰 목표의 값이다. **최대 절대오차**는 한 축의 모든 시간 샘플과 목표 중 가장 큰 절대 차이다.
+- **Target RMSE** is the root mean square of the replay-minus-target joint angles over 211 time samples and 7 axes, expressed in degrees. **Final mean RMSE** is the arithmetic mean of the final RMSE values across targets.
+- **Above threshold** counts targets with a final RMSE greater than 0.1 rad (approximately 5.730°). The criterion applies to the aggregate error across axes.
+- **Max RMSE for a joint axis** is the largest time-series RMSE for that axis across targets. **Max absolute error** is the largest absolute angular difference for that axis across all time samples and targets.
 
-## 재현
+## Reproduction
 
-[설치 안내](../../packages/sensory-translator-v2/README.md)에 따라 Python V2 패키지의 물리 의존성과 검증된 실행 자산을 준비한다. 패키지를 설치한 환경에서 저장소 루트로 이동한 뒤 아래 명령을 실행한다. `ASSET_ROOT`에 검증된 번들 경로를 지정한다. 로컬 체크아웃에 체크포인트와 FlyMimic 자산을 모아 두었다면 저장소 경로를 지정할 수 있다. 사전 계획 실험에서 출력한 목표와 해시 검증 기록을 보조 실험이 읽는다.
+Install the Python package with its physics dependencies and prepare the verified runtime assets. Then run the commands below from the repository root in that environment. Set `ASSET_ROOT` to the verified bundle or to a local checkout containing the checkpoints and FlyMimic assets. The follow-up experiment reads the target and hash verification records written by the planned experiment. [Installation guide](../../packages/sensory-translator-v2/README.md)
 
 ```bash
 ASSET_ROOT=/path/to/verified/runtime/bundle
@@ -72,17 +72,17 @@ python scripts/benchmark_v2_unseen_forward.py \
   --output results/unseen_family_reproduction/forward
 ```
 
-저장소의 스크립트와 `methods.json`에 기록된 체크포인트·물리 자산 해시를 확인하면 실험 설정을 확인할 수 있다. 원래 실험은 Linux에서 CPU 세 개에 작업자를 하나씩 묶어 실행했다. 같은 배치를 원하면 두 명령에 각각 `--cpus`와 사용 가능한 서로 다른 Linux 논리 CPU 번호 세 개를 추가한다. 종료 시점이 벽시계 예산에 따라 달라지므로 하드웨어와 프로세스 부하에 따라 최종 오차도 달라질 수 있다.
+The scripts and the checkpoint and physics asset hashes in `methods.json` record the experimental settings. The original runs pinned one worker to each of three Linux CPUs. To reproduce that layout, pass `--cpus` followed by three distinct available Linux logical CPU IDs to each command. Hardware and process load can change the final error because both experiments use a wall-clock deadline.
 
-| 파일 | 내용 |
+| File | Contents |
 |---|---|
-| [summary.csv](summary.csv) | 실험·계열·방법별 RMSE 및 실패율 16행 |
-| [trials.csv](trials.csv) | 목표·방법별 기록 36행. 탐색 시간, 재생 검증, 기울기 검사 횟수, 관절별 오차를 포함 |
-| [per_joint_worst.csv](per_joint_worst.csv) | 실험·계열·방법·관절축별 최악 오차 112행 |
-| [time_curve.csv](time_curve.csv) | 그래프에 사용한 경과 시간별 최선 평균 RMSE |
-| [methods.json](methods.json) | 사전 계획 및 보조 실험 설정, 분할 및 거리 감사, 시드, 해시, 검증 결과 |
-| [targets.npz](targets.npz) | 합성 목표 배열 `target_rad` (9×211×7), 초기 자세 편차 `initial_delta_rad` (9×7), 목표를 재현하는 `witness_knots_hz` (9×15×105)와 `witness_controls` (9×210×15), 목표 이름과 계열. `numpy.load(..., allow_pickle=False)`로 읽을 수 있음 |
+| [summary.csv](summary.csv) | 16 rows of RMSE and threshold failure counts by experiment, family, and method |
+| [trials.csv](trials.csv) | 36 rows by target and method, including search time, replay verification, gradient check counts, and per-joint errors |
+| [per_joint_worst.csv](per_joint_worst.csv) | 112 rows of worst errors by experiment, family, method, and joint axis |
+| [time_curve.csv](time_curve.csv) | Best mean RMSE by elapsed time, as used in the plot |
+| [methods.json](methods.json) | Planned and follow-up experiment settings, split and distance audits, seeds, hashes, and verification results |
+| [targets.npz](targets.npz) | Synthetic target angles `target_rad` (9×211×7), initial pose offsets `initial_delta_rad` (9×7), inputs that reproduce the targets `witness_knots_hz` (9×15×105) and `witness_controls` (9×210×15), plus target names and families. Load with `numpy.load(..., allow_pickle=False)`. |
 
-## 검증 범위
+## Scope
 
-한 가지 물리 모델과 초기 자세에서 합성한 9개 목표에 대한 결과다. 시험한 세 계열 안에서 초기화 개선을 관찰했으며, 샘플 수는 계열당 세 개였다. 보조 실험은 사전 계획 실험의 방향 검사 실패를 확인한 뒤 추가했다. 초기화 선택의 효과를 이 비교로 평가했으며, 실제 초파리의 보행이나 감각 자극, 스파이크, 전극 파형의 정확도는 측정 범위 밖이다.
+The results cover 9 synthetic targets from one physics model and one initial pose, with three samples per family. We added the forward-search experiment after seeing direction checks fail in the planned experiment. The comparison measures the effect of initialization on simulated inverse control. Live-fly locomotion, sensory stimulation, spike timing, and electrode waveform accuracy require separate tests.
